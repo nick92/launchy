@@ -1,0 +1,10 @@
+[Desktop Entry]
+Name=Launchy
+Comment=Appliation launcher
+Exec=launchy
+Icon=preferences-system-login
+Terminal=false
+Type=Application
+NoDisplay=true
+X-GNOME-AutoRestart=true
+X-GNOME-Autostart-Phase=Applications
