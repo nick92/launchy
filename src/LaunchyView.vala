@@ -61,7 +61,7 @@ namespace Launcher {
 
             view_cats = new Gtk.ToggleButton();
             var image = new Gtk.Image.from_icon_name ("view-list-compact-symbolic", Gtk.IconSize.MENU);
-            image.tooltip_text = _("View by Category");
+            image.tooltip_text = _("View Categories");
             view_cats.add(image);
             this.pack_start (view_cats,false,false,0);
 
