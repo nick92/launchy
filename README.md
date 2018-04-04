@@ -1,6 +1,6 @@
 # launchy
 
-![panther](data/screenshot.png)
+![launchy](data/screenshot.png)
 
 ## Installing and Running 
 
@@ -13,11 +13,9 @@
  	libjson-glib-dev
  	libplank-dev
  	libsoup2.4-dev
-	libswitchboard-2.0-dev
 	libunity-dev
-	libwingpanel-2.0-dev
 	libwnck-3-dev
-	libzeitgeist-2.0-dev
+	libzeitgeist-2.0-dev (optional)
 	pkg-config
 	valac
 
