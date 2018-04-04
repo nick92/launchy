@@ -61,13 +61,10 @@ namespace Launcher {
             this.pack_start(view_all,false,false,0);*/
 
             view_cats = new Gtk.ToggleButton();
-<<<<<<< HEAD
+
             var image = new Gtk.Image.from_icon_name ("panther-view-list", Gtk.IconSize.MENU);
             image.tooltip_text = _("View by Category");
-=======
-            var image = new Gtk.Image.from_icon_name ("view-list-compact-symbolic", Gtk.IconSize.MENU);
-            image.tooltip_text = _("View Categories");
->>>>>>> 44cd0a77de3a21e27c651f1469f572e5c13396bf
+
             view_cats.add(image);
             this.pack_start (view_cats,false,false,0);
 
@@ -236,7 +233,7 @@ namespace Launcher {
             } catch (Error e) {
                 critical (e.message);
             }
-            
+
             weak Gtk.IconTheme default_theme = Gtk.IconTheme.get_default ();
 			default_theme.add_resource_path ("/org/enso/launchy/icons");
 
@@ -364,14 +361,14 @@ namespace Launcher {
             if (Launchy.settings.show_category_filter) {
                 top.add (view_selector_revealer);
             }
-            
+
 			actions_button = new Gtk.ToggleButton ();
 			actions_button.get_style_context ().add_class (Gtk.STYLE_CLASS_FLAT);
 			actions_button.image = new Gtk.Image.from_icon_name ("system-shutdown", Gtk.IconSize.LARGE_TOOLBAR);
 			//power_button.set_size_request (45, 45)
 			actions_button.halign = Gtk.Align.END;
 			actions_button.hexpand = true;
-			
+
             top.add (actions_button);
 
             bottom.add (search_entry);
@@ -393,7 +390,7 @@ namespace Launcher {
             search_view.start_search.connect ((match, target) => {
                 search.begin (search_entry.text, match, target);
             });
-            
+
             // Create the "SEARCH_VIEW"
             actions_view = new Widgets.ActionsView (this);
 
@@ -1030,7 +1027,7 @@ namespace Launcher {
                     view_selector_revealer.set_reveal_child (true);
                     stack.set_visible_child_name ("stared");
                     break;
-				
+
 				case Modality.ACTIONS_VIEW:
                     view_selector_revealer.set_reveal_child (true);
                     stack.set_visible_child_name ("actions");
