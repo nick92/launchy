@@ -79,12 +79,10 @@ public class Launcher.Widgets.Switcher : Gtk.Box {
     }
 
     private void add_child (Gtk.Widget widget) {
-        //var button = new Gtk.ToggleButton.with_label ((buttons.size +1).to_string ());
-        //var button = new Gtk.ToggleButton.with_label ("°");
         var button = new Gtk.ToggleButton ();
-        button.image = new Gtk.Image.from_icon_name ("pager-checked-symbolic", Gtk.IconSize.MENU);
-        button.get_style_context ().add_class (Gtk.STYLE_CLASS_FLAT);
-        button.get_style_context ().add_class ("switcher");
+		button.image = new Gtk.Image.from_icon_name ("panther-icon-index", Gtk.IconSize.MENU);
+		button.get_style_context ().add_class (Gtk.STYLE_CLASS_FLAT);
+		button.get_style_context ().add_class ("switcher");
         button.button_release_event.connect (() => {
             foreach (var entry in buttons.entries) {
                 if (entry.value == button)

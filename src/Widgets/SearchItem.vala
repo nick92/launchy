@@ -40,7 +40,7 @@ namespace Launcher.Widgets {
 
             this.action = action;
             get_style_context ().add_class (Gtk.STYLE_CLASS_FLAT);
-
+			
             string markup;
             if (action)
                 markup = action_title;

@@ -4,13 +4,13 @@ set (GETTEXT_PACKAGE "launchy")
 set (RELEASE_NAME "launchy")
 set (CMAKE_C_FLAGS "")
 set (PREFIX ${CMAKE_INSTALL_PREFIX})
-set (VERSION "1.10.0")
+set (VERSION "1.0.0")
 set (TESTSRCDIR "${CMAKE_SOURCE_DIR}")
 set (DOLLAR "$")
 
 configure_file (${CMAKE_SOURCE_DIR}/src/Config.vala.cmake ${CMAKE_BINARY_DIR}/src/Config.vala)
 add_definitions(-DGETTEXT_PACKAGE=\"${GETTEXT_PACKAGE}\")
-set (VERSION "1.10.0")
+set (VERSION "1.0.0")
 add_definitions (${DEPS_CFLAGS})
 link_libraries ( ${DEPS_LIBRARIES} )
 link_directories ( ${DEPS_LIBRARY_DIRS} )
@@ -63,6 +63,7 @@ set (APP_SOURCES ${APP_SOURCES} Widgets/Sidebar.vala)
 set (APP_SOURCES ${APP_SOURCES} Widgets/Switcher.vala)
 set (APP_SOURCES ${APP_SOURCES} Widgets/UserView.vala)
 set (APP_SOURCES ${APP_SOURCES} Widgets/StaredView.vala)
+set (APP_SOURCES ${APP_SOURCES} Widgets/ActionsView.vala)
 set (APP_SOURCES ${APP_SOURCES} synapse-core/common-actions.vala)
 set (APP_SOURCES ${APP_SOURCES} synapse-core/config-service.vala)
 set (APP_SOURCES ${APP_SOURCES} synapse-core/data-sink.vala)
@@ -96,6 +97,9 @@ if ((${CMAKE_BUILD_TYPE} STREQUAL "Debug") OR (${CMAKE_BUILD_TYPE} STREQUAL "Rel
 	set(COMPILE_OPTIONS ${COMPILE_OPTIONS} "-g")
 endif()
 
+include (GResource)
+glib_compile_resources (GLIB_RESOURCES_CSS SOURCE ../data/icons.gresource.xml)
+
 set (CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -DGMENU_I_KNOW_THIS_IS_UNSTABLE" )
 
 add_definitions(-w -Wall -Winit-self -Wwrite-strings -Wunreachable-code -Wstrict-prototypes)
@@ -109,7 +113,7 @@ OPTIONS
 )
 
 
-add_executable(launchy ${VALA_C})
+add_executable(launchy ${VALA_C} ${GLIB_RESOURCES_CSS})
 target_link_libraries( launchy m )
 
 install(TARGETS

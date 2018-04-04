@@ -62,6 +62,23 @@ namespace Launcher.Backend {
 
             return null;
         }
+        
+        public async Gee.List<Synapse.Match>? search_actions (string text, Synapse.SearchProvider? provider = null) {
+
+            if (current_search != null)
+                current_search.cancel ();
+
+            if (provider == null)
+                provider = sink;
+
+            var results = new Synapse.ResultSet ();
+
+            try {
+                return yield provider.search (text, Synapse.QueryFlags.ACTIONS, results, current_search);
+            } catch (Error e) { warning (e.message); }
+
+            return null;
+        }
 
         public static Gee.List<Synapse.Match> find_actions_for_match (Synapse.Match match) {
             return sink.find_actions_for_match (match, null, Synapse.QueryFlags.ALL);

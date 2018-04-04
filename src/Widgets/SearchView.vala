@@ -119,6 +119,8 @@ namespace Launcher.Widgets {
 
             foreach (var match in matches) {
                 Gee.LinkedList<Synapse.Match> list = null;
+                
+                warning(search_term +"::"+match.match_type.to_string());
 
                 // we're cheating here to give remote results a separate category. We assign 8 as
                 // the id for internet results, which currently is the lowest undefined MatchType

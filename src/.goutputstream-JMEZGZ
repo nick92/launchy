@@ -326,7 +326,6 @@ namespace Launcher {
             // Add top bar
             top = new Gtk.Grid ();
             top.orientation = Gtk.Orientation.HORIZONTAL;
-            top.hexpand = true;
             top.margin_start = 6;
             top.margin_end = 6;
 
@@ -362,11 +361,10 @@ namespace Launcher {
             
 			actions_button = new Gtk.ToggleButton ();
 			actions_button.get_style_context ().add_class (Gtk.STYLE_CLASS_FLAT);
-			actions_button.image = new Gtk.Image.from_icon_name ("system-shutdown", Gtk.IconSize.LARGE_TOOLBAR);
-			//power_button.set_size_request (45, 45)
-			actions_button.halign = Gtk.Align.END;
-			actions_button.hexpand = true;
-			
+			actions_button.image = new Gtk.Image.from_icon_name ("panther-power", Gtk.IconSize.LARGE_TOOLBAR);
+			//power_button.set_size_request (45, 45);
+			actions_button.valign = Gtk.Align.CENTER;
+
             top.add (actions_button);
 
             bottom.add (search_entry);
@@ -388,15 +386,11 @@ namespace Launcher {
             search_view.start_search.connect ((match, target) => {
                 search.begin (search_entry.text, match, target);
             });
-            
-            // Create the "SEARCH_VIEW"
-            actions_view = new Widgets.ActionsView (this);
 
             stack.add_named (category_view, "category");
             stack.add_named (grid_view, "normal");
             stack.add_named (search_view, "search");
             stack.add_named (stared_view, "stared");
-            stack.add_named (actions_view, "actions");
 
             container.attach (top, 0, 0, 1, 1);
             container.attach (stack, 0, 1, 1, 1);
@@ -528,10 +522,11 @@ namespace Launcher {
             });
             actions_button.toggled.connect (() => {
 				if(actions_button.active){
-					//if (modality != Modality.ACTIONS_VIEW)
-					set_modality (Modality.ACTIONS_VIEW);
-					//search.begin ("shutdown");
-					//search.begin ("restart");
+					if (modality != Modality.SEARCH_VIEW)
+						set_modality (Modality.SEARCH_VIEW);
+					
+					search.begin ("shutdown");
+					search.begin ("restart");
 				}
 				else {
 					set_modality ((Modality) view_selector.selected);
@@ -1025,11 +1020,7 @@ namespace Launcher {
                     view_selector_revealer.set_reveal_child (true);
                     stack.set_visible_child_name ("stared");
                     break;
-				
-				case Modality.ACTIONS_VIEW:
-                    view_selector_revealer.set_reveal_child (true);
-                    stack.set_visible_child_name ("actions");
-                    break;
+
             }
         }
 

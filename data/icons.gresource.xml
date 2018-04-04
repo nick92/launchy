@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <gresources>
   <gresource prefix="/org/enso/launchy/icons">
-    <file alias="pager-checked-symbolic.svg" compressed="true" preprocess="xml-stripblanks">pager-checked-symbolic.svg</file>
-    <file alias="view-filter-symbolic.svg" compressed="true" preprocess="xml-stripblanks">view-filter-symbolic.svg</file>
-    <file alias="view-filter-symbolic-rtl.svg" compressed="true" preprocess="xml-stripblanks">view-filter-symbolic-rtl.svg</file>
+    <file alias="panther-icon-index.svg" compressed="true" preprocess="xml-stripblanks">icons/panther-icon-index.svg</file>
+    <file alias="panther-view-list.svg" compressed="true" preprocess="xml-stripblanks">icons/panther-view-list.svg</file>
+    <file alias="panther-bookmarks.svg" compressed="true" preprocess="xml-stripblanks">icons/panther-bookmarks.svg</file>
+    <file alias="panther-power.svg" compressed="true" preprocess="xml-stripblanks">icons/panther-power.svg</file>
   </gresource>
   <gresource prefix="/org/enso/launchy">
     <file alias="applications-menu.css" compressed="true">applications-menu.css</file>
