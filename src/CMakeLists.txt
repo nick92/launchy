@@ -81,6 +81,7 @@ set (APP_SOURCES ${APP_SOURCES} synapse-core/volume-service.vala)
 #set (APP_SOURCES ${APP_SOURCES} synapse-plugins/command-plugin.vala)
 set (APP_SOURCES ${APP_SOURCES} synapse-plugins/desktop-file-plugin.vala)
 set (APP_SOURCES ${APP_SOURCES} synapse-plugins/system-managment.vala)
+set (APP_SOURCES ${APP_SOURCES} synapse-plugins/web-search.vala)
 
 if (HAVE_ZEITGEIST)
 	set (COMPILE_OPTIONS ${COMPILE_OPTIONS} -D HAVE_ZEITGEIST)

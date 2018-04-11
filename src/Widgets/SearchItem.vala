@@ -56,7 +56,7 @@ namespace Launcher.Widgets {
 
             // load a favicon if we're an internet page
             var uri_match = app.match as Synapse.UriMatch;
-            if (uri_match != null && uri_match.uri.has_prefix ("http")) {
+            if (uri_match != null && (uri_match.uri.has_prefix ("http") || uri_match.uri.has_prefix ("https")) ) {
                 cancellable = new Cancellable ();
                 Backend.SynapseSearch.get_favicon_for_match.begin (uri_match,
                     ICON_SIZE, cancellable, (obj, res) => {

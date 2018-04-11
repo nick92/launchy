@@ -40,5 +40,8 @@
             <summary>The last resolution of the screen</summary>
             <description>This value makes Panther able to adapt to each screen.</description>
         </key>
+				<key name="window-position" type="ai">
+            <default>[]</default>
+        </key>
 	</schema>
 </schemalist>

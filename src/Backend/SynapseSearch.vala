@@ -26,7 +26,8 @@ namespace Launcher.Backend {
             //typeof (Synapse.CalculatorPlugin),
             //typeof (Synapse.CommandPlugin),
             typeof (Synapse.DesktopFilePlugin),
-            typeof (Synapse.SystemManagementPlugin)
+            typeof (Synapse.SystemManagementPlugin),
+            typeof (Synapse.WebSearchPlugin),
         };
 
         private static Synapse.DataSink? sink = null;
@@ -72,7 +73,7 @@ namespace Launcher.Backend {
                 provider = sink;
 
             var results = new Synapse.ResultSet ();
-
+			
             try {
                 return yield provider.search (text, Synapse.QueryFlags.ACTIONS, results, current_search);
             } catch (Error e) { warning (e.message); }
@@ -97,7 +98,7 @@ namespace Launcher.Backend {
             Cancellable? cancellable = null) {
 
             var soup_uri = new Soup.URI (match.uri);
-            if (!soup_uri.scheme.has_prefix ("http"))
+            if (!(soup_uri.scheme.has_prefix ("http") || soup_uri.scheme.has_prefix ("https")))
                 return null;
 
             Gdk.Pixbuf? pixbuf = null;

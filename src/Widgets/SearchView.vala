@@ -120,7 +120,7 @@ namespace Launcher.Widgets {
             foreach (var match in matches) {
                 Gee.LinkedList<Synapse.Match> list = null;
                 
-                warning(search_term +"::"+match.match_type.to_string());
+                //warning(search_term +"::"+match.match_type.to_string());
 
                 // we're cheating here to give remote results a separate category. We assign 8 as
                 // the id for internet results, which currently is the lowest undefined MatchType
@@ -180,8 +180,8 @@ namespace Launcher.Widgets {
                     case Synapse.MatchType.CONTACT:
                         label = _("Contacts");
                         break;
-                    case 8:
-                        label = _("Internet");
+                    case Synapse.MatchType.INTERNET:
+                        label = _("Search the Internet");
                         break;
                     case 10:
                         label = _("Application Actions");
@@ -206,8 +206,13 @@ namespace Launcher.Widgets {
                         n_results++;
                         continue;
                     }
+                    else if (match.match_type == Synapse.MatchType.INTERNET) {
+						show_search (new Backend.App.from_synapse_match (match), search_term);
+						n_results++;
+                        continue;
+					}                    
                     // expand the actions we get for UNKNOWN
-                    if (match.match_type == Synapse.MatchType.UNKNOWN) {
+                    else if (match.match_type == Synapse.MatchType.UNKNOWN) {
                         var actions = Backend.SynapseSearch.find_actions_for_match (match);
                         foreach (var action in actions) {
                             show_app (new Backend.App.from_synapse_match (action, match), search_term);
@@ -223,7 +228,6 @@ namespace Launcher.Widgets {
         }
 
         private void show_app (Backend.App app, string search_term) {
-
             var search_item = new SearchItem (app, search_term);
             app.start_search.connect ((search, target) => start_search (search, target));
             search_item.button_release_event.connect (() => {
@@ -239,6 +243,23 @@ namespace Launcher.Widgets {
 
             items[app] = search_item;
 
+        }
+        
+        private void show_search (Backend.App app, string search_term) {
+            var search_item = new SearchItem (app, "", true, search_term);
+            app.start_search.connect ((search, target) => start_search (search, target));
+            search_item.button_release_event.connect (() => {
+                if (!search_item.dragging) {
+                    ((Synapse.DesktopFilePlugin.ActionMatch) app.match).execute (null);
+                    app_launched ();
+                }
+
+                return true;
+            });
+            main_box.pack_start (search_item, false, false);
+            search_item.show_all ();
+
+            items[app] = search_item;
         }
 
         private void show_action (Backend.App app) {

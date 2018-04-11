@@ -61,18 +61,15 @@ namespace Launcher {
             this.pack_start(view_all,false,false,0);*/
 
             view_cats = new Gtk.ToggleButton();
-<<<<<<< HEAD
-            var image = new Gtk.Image.from_icon_name ("panther-view-list", Gtk.IconSize.MENU);
-            image.tooltip_text = _("View by Category");
-=======
+
             var image = new Gtk.Image.from_icon_name ("view-list-compact-symbolic", Gtk.IconSize.MENU);
             image.tooltip_text = _("View Categories");
->>>>>>> 44cd0a77de3a21e27c651f1469f572e5c13396bf
+
             view_cats.add(image);
             this.pack_start (view_cats,false,false,0);
 
             view_stared = new Gtk.ToggleButton();
-            var stared_image = new Gtk.Image.from_icon_name ("panther-bookmarks", Gtk.IconSize.MENU);
+            var stared_image = new Gtk.Image.from_icon_name ("user-bookmarks-symbolic", Gtk.IconSize.MENU);
             stared_image.tooltip_text = _("View Stared");
             view_stared.add(stared_image);
             this.pack_start(view_stared,false,false,0);
@@ -332,8 +329,8 @@ namespace Launcher {
             top = new Gtk.Grid ();
             top.orientation = Gtk.Orientation.HORIZONTAL;
             top.hexpand = true;
-            top.margin_start = 6;
-            top.margin_end = 6;
+            top.margin_start = 12;
+            top.margin_end = 12;
 
             // Add bottom bar
             bottom = new Gtk.Grid ();
@@ -602,18 +599,33 @@ namespace Launcher {
             debug ("Repositioning");
 
             var workspace_area = this.get_screen().get_monitor_workarea(this.screen.get_primary_monitor());
+            
+            restore_window_position ();
+            
+            int x, y;
+            
+            
 
             int new_y;
-            if (Launchy.settings.show_at_top) {
-                new_y = workspace_area.y;
-            } else {
-                new_y = workspace_area.y + workspace_area.height - this.get_window().get_height();
-            }
+            int new_x;
+            if (show_at_mouse){
+				get_current_cursor_position(out x, out y);    
+				new_y = y;
+				new_x = x;
+			}
+			else {
+				new_x = workspace_area.x;
+				if (Launchy.settings.show_at_top) {
+					new_y = workspace_area.y;	
+				} else {
+					new_y = workspace_area.y + workspace_area.height - this.get_window().get_height();
+				}
+			}
 
             if (get_style_context ().direction == Gtk.TextDirection.LTR) {
-                this.move (workspace_area.x, new_y);
+                this.move (new_x, new_y);
             } else {
-                this.move (workspace_area.x + workspace_area.width - this.get_window ().get_width (), new_y);
+                this.move (new_x + workspace_area.width - this.get_window ().get_width (), new_y);
             }
         }
 
@@ -930,8 +942,9 @@ namespace Launcher {
             }
 
             search_entry.text = "";
-
+            
             reposition ();
+            save_window_position ();
             show_all ();
             this.event_box.show_all();
             //this.container.show_all();
@@ -1216,6 +1229,55 @@ namespace Launcher {
             category_column_focus = 0;
             category_row_focus = 0;
         }
+        
+        /**
+         *  Restore window position.
+         */
+        public void restore_window_position () {
+            //var position = new Variant (Launchy.settings.window_position[0].to_string(), Launchy.settings.window_position[1].to_string());
+            //var win_size = Launchy.settings.get_window_position ("window-size");
+			var position = Launchy.settings.get_window_positions ();
+			
+			if (position.n_children () == 2) {
+                var x = (int32) position.get_child_value (0);
+                var y = (int32) position.get_child_value (1);
+
+                debug ("Moving window to coordinates %d, %d", x, y);
+                this.move (x, y);
+            } else {
+                debug ("Moving window to the centre of the screen");
+                this.window_position = Gtk.WindowPosition.CENTER;
+            }
+
+            /*if (win_size.n_children () == 2) {
+                var width =  (int32) win_size.get_child_value (0);
+                                var height = (int32) win_size.get_child_value (1);
+
+                                debug ("Resizing to width and height: %d, %d", width, height);
+                this.resize (width, height);
+            } else {
+                debug ("Not resizing window");
+            }*/
+        }
+
+        /**
+         *  Save window position.
+         */
+        public void save_window_position () {
+            int x, y, width, height;
+            this.get_position (out x, out y);
+            this.get_size (out width, out height);
+            debug ("Saving window position to %d, %d", x, y);
+            Launchy.settings.set_window_positions (x, y);
+            //debug ("Saving window size of width and height: %d, %d", width, height); 
+            //Launchy.settings.set_value ("window-size", new int[] { width, height });
+        }
+        
+        public void get_current_cursor_position (out int x, out int y)
+		{
+			Gdk.Display.get_default ().get_device_manager ().get_client_pointer ().get_position (null,
+				out x, out y);
+		}
     }
 
 }

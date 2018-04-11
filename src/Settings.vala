@@ -34,6 +34,7 @@ namespace Launcher {
         public string screen_resolution { get; set; }
         public string resolution { get; set; }
         public bool show_at_top {get; set; }
+        public int[] window_position {get; set; }
 
         private GLib.Settings panther_settings;
 
@@ -51,6 +52,7 @@ namespace Launcher {
             this.panther_settings.bind("use-category",this,"use_category",SettingsBindFlags.DEFAULT);
             this.panther_settings.bind("screen-resolution",this,"screen_resolution",SettingsBindFlags.DEFAULT);
             this.panther_settings.bind("show-at-top",this,"show_at_top",SettingsBindFlags.DEFAULT);
+            
             //this.panther_settings.bind("favourite",this,"favourite",SettingsBindFlags.DEFAULT);
 
             this.panther_settings.changed.connect((key) => {
@@ -73,5 +75,17 @@ namespace Launcher {
                 }
             });
         }
+        
+        public Variant get_window_positions () 
+        {
+			//this.panther_settings.bind("window-position",this,"window_position",SettingsBindFlags.DEFAULT);
+			return this.panther_settings.get_value("window-position");
+		}
+		
+		public void set_window_positions (int x, int y) 
+        {
+			//this.panther_settings.bind("window-position",this,"window_position",SettingsBindFlags.DEFAULT);
+			this.panther_settings.set_value ("window-position", new int[] { x, y });
+		}
     }
 }

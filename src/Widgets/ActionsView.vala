@@ -72,20 +72,7 @@ namespace Launcher.Widgets {
         }
         
         private async void show_actions () {
-            //FIXME bit of a shody way of doing this -- think of rework in Synapse
-            /*var actions = Backend.SynapseSearch.find_actions_for_match ();
-			foreach (var action in actions) {
-				var app = new Backend.App.from_synapse_match (action, selected_app.app.match);
-				app.start_search.connect ((search, target) => start_search (search, target));
-				context_box.pack_start (new SearchItem (app));
-				* actions.add (new LockAction ());
-            actions.add (new LogOutAction ());
-            actions.add (new SuspendAction ());
-            actions.add (new HibernateAction ());
-            actions.add (new ShutdownAction ());
-            actions.add (new RestartAction ());
-			}*/
-			
+            //FIXME bit of a shody way of doing this
 			//var results = synapse.search ("shutdown");
 			List<string> actions = new List<string> ();
 			actions.append("shutdown");

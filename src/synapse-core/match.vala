@@ -29,7 +29,8 @@ namespace Synapse {
         GENERIC_URI,
         ACTION,
         SEARCH,
-        CONTACT
+        CONTACT,
+        INTERNET
     }
 
     public interface Match: Object {
