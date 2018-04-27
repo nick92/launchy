@@ -1,17 +1,17 @@
 ##
 # Copyright 2009-2010 Jakob Westhoff. All rights reserved.
-# Copyright 2012 elementary.
-#
+# Copyright 2012-2016 elementary LLC.
+# 
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions are met:
-#
+# 
 #    1. Redistributions of source code must retain the above copyright notice,
 #       this list of conditions and the following disclaimer.
-#
+# 
 #    2. Redistributions in binary form must reproduce the above copyright notice,
 #       this list of conditions and the following disclaimer in the documentation
 #       and/or other materials provided with the distribution.
-#
+# 
 # THIS SOFTWARE IS PROVIDED BY JAKOB WESTHOFF ``AS IS'' AND ANY EXPRESS OR
 # IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
 # MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO
@@ -22,40 +22,40 @@
 # LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE
 # OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
 # ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-#
+# 
 # The views and conclusions contained in the software and documentation are those
 # of the authors and should not be interpreted as representing official policies,
 # either expressed or implied, of Jakob Westhoff
 ##
 
-include(ParseArguments)
 find_package(Vala REQUIRED)
+include(CMakeParseArguments)
 
 ##
-# Compile vala files to their c equivalents for further processing.
+# Compile vala files to their c equivalents for further processing. 
 #
 # The "vala_precompile" macro takes care of calling the valac executable on the
 # given source to produce c files which can then be processed further using
 # default cmake functions.
-#
+# 
 # The first parameter provided is a variable, which will be filled with a list
 # of c files outputted by the vala compiler. This list can than be used in
 # conjuction with functions like "add_executable" or others to create the
 # neccessary compile rules with CMake.
-#
+# 
 # The initial variable is followed by a list of .vala files to be compiled.
 # Please take care to add every vala file belonging to the currently compiled
 # project or library as Vala will otherwise not be able to resolve all
 # dependencies.
-#
+# 
 # The following sections may be specified afterwards to provide certain options
 # to the vala compiler:
-#
+# 
 # PACKAGES
 #   A list of vala packages/libraries to be used during the compile cycle. The
 #   package names are exactly the same, as they would be passed to the valac
 #   "--pkg=" option.
-#
+# 
 # OPTIONS
 #   A list of optional options to be passed to the valac executable. This can be
 #   used to pass "--thread" for example to enable multi-threading support.
@@ -69,7 +69,7 @@ find_package(Vala REQUIRED)
 #   Pass all the needed flags to the compiler to create an internal vapi for
 #   the compiled library. The provided name will be used for this and a
 #   <provided_name>.vapi file will be created.
-#
+# 
 # GENERATE_HEADER
 #   Let the compiler generate a header file for the compiled code. There will
 #   be a header file as well as an internal header file being generated called
@@ -82,7 +82,7 @@ find_package(Vala REQUIRED)
 #
 # GENERATE_SYMBOLS
 #   Output a <provided_name>.symbols file containing all the exported symbols.
-#
+# 
 # The following call is a simple example to the vala_precompile macro showing
 # an example to every of the optional sections:
 #
@@ -115,10 +115,10 @@ find_package(Vala REQUIRED)
 ##
 
 macro(vala_precompile output target_name)
-    parse_arguments(ARGS "TARGET;PACKAGES;OPTIONS;DIRECTORY;GENERATE_GIR;GENERATE_SYMBOLS;GENERATE_HEADER;GENERATE_VAPI;CUSTOM_VAPIS" "" ${ARGN})
+    cmake_parse_arguments (ARGS "" "GENERATE_GIR;GENERATE_SYMBOLS;GENERATE_HEADER;GENERATE_VAPI;DIRECTORY" "PACKAGES;OPTIONS;CUSTOM_VAPIS" ${ARGN})
 
     if(ARGS_DIRECTORY)
-        set(DIRECTORY ${ARGS_DIRECTORY})
+        set(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/${ARGS_DIRECTORY})
     else(ARGS_DIRECTORY)
         set(DIRECTORY ${CMAKE_CURRENT_BINARY_DIR})
     endif(ARGS_DIRECTORY)
@@ -132,8 +132,8 @@ macro(vala_precompile output target_name)
     set(out_files_display "")
     set(${output} "")
 
-    foreach(src ${ARGS_DEFAULT_ARGS})
-        string(REGEX MATCH "^([a-zA-Z]:)?/" IS_MATCHED ${src})
+    foreach(src ${ARGS_UNPARSED_ARGUMENTS})
+        string(REGEX MATCH "^/" IS_MATCHED ${src})
         if(${IS_MATCHED} MATCHES "/")
             set(src_file_path ${src})
         else()
@@ -144,8 +144,8 @@ macro(vala_precompile output target_name)
         string(REPLACE ".gs" ".c" src ${src})
         if(${IS_MATCHED} MATCHES "/")
             get_filename_component(VALA_FILE_NAME ${src} NAME)
-            set(out_file "${DIRECTORY}/${VALA_FILE_NAME}")
-            list(APPEND out_files "${DIRECTORY}/${VALA_FILE_NAME}")
+            set(out_file "${CMAKE_CURRENT_BINARY_DIR}/${VALA_FILE_NAME}")
+            list(APPEND out_files "${CMAKE_CURRENT_BINARY_DIR}/${VALA_FILE_NAME}")
         else()
             set(out_file "${DIRECTORY}/${src}")
             list(APPEND out_files "${DIRECTORY}/${src}")
@@ -156,12 +156,14 @@ macro(vala_precompile output target_name)
 
     set(custom_vapi_arguments "")
     if(ARGS_CUSTOM_VAPIS)
+        # Check for relative and absolute paths
         foreach(vapi ${ARGS_CUSTOM_VAPIS})
-            if(${vapi} MATCHES ${CMAKE_SOURCE_DIR} OR ${vapi} MATCHES ${CMAKE_BINARY_DIR})
+            string(REGEX MATCH "^/" IS_MATCHED ${vapi})
+            if(${IS_MATCHED} MATCHES "/")
                 list(APPEND custom_vapi_arguments ${vapi})
-            else (${vapi} MATCHES ${CMAKE_SOURCE_DIR} OR ${vapi} MATCHES ${CMAKE_BINARY_DIR})
+            else()
                 list(APPEND custom_vapi_arguments ${CMAKE_CURRENT_SOURCE_DIR}/${vapi})
-            endif(${vapi} MATCHES ${CMAKE_SOURCE_DIR} OR ${vapi} MATCHES ${CMAKE_BINARY_DIR})
+            endif()
         endforeach(vapi ${ARGS_CUSTOM_VAPIS})
     endif(ARGS_CUSTOM_VAPIS)
 
@@ -185,10 +187,21 @@ macro(vala_precompile output target_name)
     endif(ARGS_GENERATE_HEADER)
 
     set(gir_arguments "")
+    set(gircomp_command "")
     if(ARGS_GENERATE_GIR)
         list(APPEND out_files "${DIRECTORY}/${ARGS_GENERATE_GIR}.gir")
         list(APPEND out_files_display "${ARGS_GENERATE_GIR}.gir")
         set(gir_arguments "--gir=${ARGS_GENERATE_GIR}.gir")
+
+        include (FindGirCompiler)
+        find_package(GirCompiler REQUIRED)
+        
+        set(gircomp_command 
+            COMMAND 
+                ${G_IR_COMPILER_EXECUTABLE}
+            ARGS 
+                "${DIRECTORY}/${ARGS_GENERATE_GIR}.gir"
+                -o "${DIRECTORY}/${ARGS_GENERATE_GIR}.typelib")
     endif(ARGS_GENERATE_GIR)
 
     set(symbols_arguments "")
@@ -198,43 +211,38 @@ macro(vala_precompile output target_name)
         set(symbols_arguments "--symbols=${ARGS_GENERATE_SYMBOLS}.symbols")
     endif(ARGS_GENERATE_SYMBOLS)
 
-    set(os_defines "")
-    if(WIN32)
-        list(APPEND os_defines "-D" "\"G_OS_WIN32\"")
-    endif(WIN32)
-
     # Workaround for a bug that would make valac run twice. This file is written
     # after the vala compiler generates C source code.
-    set (extra_name ${extra_name}_ )
-    set(OUTPUT_STAMP ${CMAKE_CURRENT_BINARY_DIR}/${target_name}${extra_name}valac.stamp)
+    set(OUTPUT_STAMP ${CMAKE_CURRENT_BINARY_DIR}/${target_name}_valac.stamp)
 
     add_custom_command(
     OUTPUT
         ${OUTPUT_STAMP}
-    COMMAND
-        ${VALA_EXECUTABLE}
-    ARGS
-        "-C"
-        ${header_arguments}
-        ${vapi_arguments}
-        ${gir_arguments}
-        ${symbols_arguments}
-        "-b" ${CMAKE_CURRENT_SOURCE_DIR}
-        "-d" ${DIRECTORY}
-        ${os_defines}
-        ${vala_pkg_opts}
-        ${ARGS_OPTIONS}
-        ${in_files}
+    COMMAND 
+        ${VALA_EXECUTABLE} 
+    ARGS 
+        "-C" 
+        ${header_arguments} 
+        ${vapi_arguments} 
+        ${gir_arguments} 
+        ${symbols_arguments} 
+        "-b" ${CMAKE_CURRENT_SOURCE_DIR} 
+        "-d" ${DIRECTORY} 
+        ${vala_pkg_opts} 
+        ${ARGS_OPTIONS} 
+        "-g"
+        ${in_files} 
         ${custom_vapi_arguments}
     COMMAND
         touch
     ARGS
         ${OUTPUT_STAMP}
-    DEPENDS
-        ${in_files}
+    DEPENDS 
+        ${in_files} 
         ${ARGS_CUSTOM_VAPIS}
     COMMENT
         "Generating ${out_files_display}"
+    ${gircomp_command}
     )
 
     # This command will be run twice for some reason (pass a non-empty string to COMMENT

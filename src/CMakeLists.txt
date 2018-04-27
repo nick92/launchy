@@ -12,8 +12,8 @@ configure_file (${CMAKE_SOURCE_DIR}/src/Config.vala.cmake ${CMAKE_BINARY_DIR}/sr
 add_definitions(-DGETTEXT_PACKAGE=\"${GETTEXT_PACKAGE}\")
 set (VERSION "1.0.0")
 add_definitions (${DEPS_CFLAGS})
-link_libraries ( ${DEPS_LIBRARIES} )
-link_directories ( ${DEPS_LIBRARY_DIRS} )
+link_libraries (${DEPS_LIBRARIES})
+link_directories (${DEPS_LIBRARY_DIRS})
 find_package (Vala REQUIRED)
 include (ValaVersion)
 ensure_vala_version ("0.26" MINIMUM)
@@ -98,9 +98,6 @@ if ((${CMAKE_BUILD_TYPE} STREQUAL "Debug") OR (${CMAKE_BUILD_TYPE} STREQUAL "Rel
 	set(COMPILE_OPTIONS ${COMPILE_OPTIONS} "-g")
 endif()
 
-include (GResource)
-glib_compile_resources (GLIB_RESOURCES_CSS SOURCE ../data/icons.gresource.xml)
-
 set (CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -DGMENU_I_KNOW_THIS_IS_UNSTABLE" )
 
 add_definitions(-w -Wall -Winit-self -Wwrite-strings -Wunreachable-code -Wstrict-prototypes)
@@ -110,11 +107,17 @@ vala_precompile(VALA_C launchy
 PACKAGES
 	${VALA_PACKAGES}
 OPTIONS
+    --vapidir=${CMAKE_SOURCE_DIR}/vapi
+	--thread
+	--target-glib=2.38
 	${COMPILE_OPTIONS}
 )
 
+include (GResource)
+glib_compile_resources (GLIB_RESOURCES_CSS SOURCE ../data/icons.gresource.xml)
 
 add_executable(launchy ${VALA_C} ${GLIB_RESOURCES_CSS})
+#add_executable(launchy ${VALA_C})
 target_link_libraries( launchy m )
 
 install(TARGETS

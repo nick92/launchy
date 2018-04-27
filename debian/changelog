@@ -1,4 +1,11 @@
-panther-launcher (1.0.0) xenial; urgency=medium
+enso-launchy (1.0.20) bionic; urgency=medium
+
+  * kill launchy on screen rezise
+
+ -- Nick Wilkins <nickawilkins@hotmail.com>  Fri, 27 Apr 2018 20:53:44 +0100
+
+
+enso-launchy (1.0.19) bionic; urgency=medium
 
   * First commit of launchy
 

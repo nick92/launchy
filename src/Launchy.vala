@@ -28,6 +28,7 @@ public class Launcher.Launchy : Gtk.Application {
     public LaunchyView view = null;
     public static bool silent = false;
     public static bool command_mode = false;
+    public static bool key_activated = false;
     public bool launched = false;
     public Gtk.ToggleButton app_button;
     public TestClient client;
@@ -99,6 +100,7 @@ public class Launcher.Launchy : Gtk.Application {
 
     const OptionEntry[] entries = {
         { "silent", 's', 0, OptionArg.NONE, ref silent, "Launch Launchy as a background process without it appearing visually.", null },
+        { "key-activated", 's', 0, OptionArg.NONE, ref key_activated, "Launch Launchy as a background process without it appearing visually.", null },
         { "command-mode", 'c', 0, OptionArg.NONE, ref command_mode, "This feature is not implemented yet. When it is, description will be changed.", null },
         { null }
     };

@@ -11,7 +11,7 @@
             <description>Setting this value to 0 will automatically set the number of rows to the best value, based on the screen size.</description>
         </key>
         <key name="icon-size" type="i">
-            <default>50</default>
+            <default>64</default>
             <summary>The default icon size of apps</summary>
             <description>This value manages the size of the icons in Panther.</description>
         </key>
@@ -40,7 +40,7 @@
             <summary>The last resolution of the screen</summary>
             <description>This value makes Panther able to adapt to each screen.</description>
         </key>
-		<key name="window-position" type="ai">
+				<key name="window-position" type="ai">
             <default>[]</default>
         </key>
 	</schema>
