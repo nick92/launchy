@@ -235,7 +235,7 @@ namespace Launcher {
             }
 
             weak Gtk.IconTheme default_theme = Gtk.IconTheme.get_default ();
-			default_theme.add_resource_path ("/org/enso/launchy/icons");
+			      default_theme.add_resource_path ("/org/enso/launchy/icons");
 
             // Window properties
             this.title = "Launchy";
@@ -321,7 +321,7 @@ namespace Launcher {
 
             // Create the base container
             container = new Gtk.Grid ();
-            container.row_spacing = 12;
+            container.row_spacing = 6;
             container.row_homogeneous = false;
             container.column_homogeneous = false;
             container.margin_top = 12;
@@ -363,13 +363,13 @@ namespace Launcher {
                 top.add (view_selector_revealer);
             }
 
-			actions_button = new Gtk.ToggleButton ();
-			actions_button.get_style_context ().add_class (Gtk.STYLE_CLASS_FLAT);
-			actions_button.image = new Gtk.Image.from_icon_name ("system-shutdown", Gtk.IconSize.LARGE_TOOLBAR);
-			//power_button.set_size_request (45, 45)
+      			actions_button = new Gtk.ToggleButton ();
+      			actions_button.get_style_context ().add_class (Gtk.STYLE_CLASS_FLAT);
+      			actions_button.image = new Gtk.Image.from_icon_name ("system-shutdown", Gtk.IconSize.LARGE_TOOLBAR);
+      			//power_button.set_size_request (45, 45)
             actions_button.tooltip_text = _("Session Actions");
-			actions_button.halign = Gtk.Align.END;
-			actions_button.hexpand = true;
+      			actions_button.halign = Gtk.Align.END;
+      			actions_button.hexpand = true;
 
             top.add (actions_button);
 
@@ -420,6 +420,7 @@ namespace Launcher {
                 set_modality (Modality.CATEGORY_VIEW);
             else
                 set_modality (Modality.NORMAL_VIEW);
+
             debug ("Ui setup completed");
         }
 
@@ -497,9 +498,9 @@ namespace Launcher {
           var note = new GLib.Notification(_(app_name));
 
           if(saved_cat)
-            note.set_body(_("Removed from Stared"));
+            note.set_body(_("Removed from Starred"));
           else
-            note.set_body(_("Added to Stared"));
+            note.set_body(_("Added to Starred"));
 
           GLib.Application.get_default ().send_notification(null, note);
 
@@ -530,17 +531,19 @@ namespace Launcher {
                     grab_device ();
                 });
             });
+
             actions_button.toggled.connect (() => {
-				if(actions_button.active){
-					//if (modality != Modality.ACTIONS_VIEW)
-					set_modality (Modality.ACTIONS_VIEW);
-					//search.begin ("shutdown");
-					//search.begin ("restart");
-				}
-				else {
-					set_modality ((Modality) view_selector.selected);
-				}
+      				if(actions_button.active){
+      					//if (modality != Modality.ACTIONS_VIEW)
+      					set_modality (Modality.ACTIONS_VIEW);
+      					//search.begin ("shutdown");
+      					//search.begin ("restart");
+      				}
+      				else {
+      					set_modality ((Modality) view_selector.selected);
+      				}
             });
+
             search_entry.search_changed.connect (() => {
                 if (modality != Modality.SEARCH_VIEW)
                     set_modality (Modality.SEARCH_VIEW);
@@ -604,17 +607,40 @@ namespace Launcher {
 
             var workspace_area = this.get_screen().get_monitor_workarea(this.screen.get_primary_monitor());
 
-            int new_y;
-            if (Launchy.settings.show_at_top) {
-                new_y = workspace_area.y;
-            } else {
-                new_y = workspace_area.y + workspace_area.height - this.get_window().get_height();
+            var position = Launchy.settings.get_window_positions ();
+
+
+            int new_x = 0;
+            int new_y = 0;
+
+            if (position.n_children () == 2) {
+                new_x = (int32) position.get_child_value (0);
+                new_y = (int32) position.get_child_value (1) + workspace_area.height - this.get_window().get_height();
+                warning("x:" + new_x.to_string() + "y:" + new_y.to_string());
             }
 
-            if (get_style_context ().direction == Gtk.TextDirection.LTR) {
-                this.move (workspace_area.x, new_y);
-            } else {
-                this.move (workspace_area.x + workspace_area.width - this.get_window ().get_width (), new_y);
+            if (Launchy.settings.show_at_top) {
+              new_y = workspace_area.y;
+              new_x = workspace_area.x;
+
+              this.move (new_x, new_y);
+            }
+            else if(new_x == 0 && new_y == 0)
+            {
+              /*if (Launchy.settings.show_at_top) {
+                  new_y = workspace_area.y;
+              } else {*/
+                  new_y = workspace_area.y + workspace_area.height - this.get_window().get_height();
+              //}
+
+              if (get_style_context ().direction == Gtk.TextDirection.LTR) {
+                  this.move (workspace_area.x, new_y);
+              } else {
+                  this.move (workspace_area.x, new_y);
+              }
+            }
+            else {
+              this.move (new_x, new_y);
             }
         }
 
