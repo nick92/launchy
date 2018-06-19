@@ -50,10 +50,7 @@ set(MODULES_TO_CHECK ${MODULES_TO_CHECK} plank)
 pkg_check_modules(DEPS REQUIRED ${MODULES_TO_CHECK})
 file (GLOB resources "${CMAKE_CURRENT_SOURCE_DIR}/data/*")
 
-add_subdirectory(src/Backend)
-add_subdirectory(src/synapse-core)
+# include
 add_subdirectory(data)
-add_subdirectory(src/synapse-plugins)
-add_subdirectory(src/Widgets)
 add_subdirectory(src)
 
