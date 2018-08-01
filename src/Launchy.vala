@@ -63,7 +63,6 @@ public class Launcher.Launchy : Gtk.Application {
     }
 
     public bool realize_view(Cairo.Context? cr) {
-
       Gtk.Allocation alloc;
       this.view.get_allocation(out alloc);
       if ((alloc.width != this.view_width) || (alloc.height != this.view_height)) {
@@ -80,7 +79,7 @@ public class Launcher.Launchy : Gtk.Application {
           this.view_height = -1;
           this.view = new LaunchyView ();
           this.view.set_application (this);
-          this.view.draw.connect_after(this.realize_view);
+          //this.view.draw.connect_after(this.realize_view);
 
           if (dbus_service == null)
               this.dbus_service = new DBusService (view);
@@ -106,7 +105,7 @@ public class Launcher.Launchy : Gtk.Application {
     };
 
     public static int main (string[] args) {
-
+        Gtk.init (ref args);
         Intl.bindtextdomain(Constants.GETTEXT_PACKAGE, GLib.Path.build_filename(Constants.DATADIR,"locale"));
         Intl.textdomain(Constants.GETTEXT_PACKAGE);
         Intl.bind_textdomain_codeset(Constants.GETTEXT_PACKAGE, "UTF-8" );

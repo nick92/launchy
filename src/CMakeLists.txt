@@ -64,7 +64,7 @@ set (APP_SOURCES ${APP_SOURCES} Widgets/Switcher.vala)
 set (APP_SOURCES ${APP_SOURCES} Widgets/UserView.vala)
 set (APP_SOURCES ${APP_SOURCES} Widgets/StaredView.vala)
 set (APP_SOURCES ${APP_SOURCES} Widgets/ActionsView.vala)
-set (APP_SOURCES ${APP_SOURCES} Widgets/CompositedWindow.vala)
+#set (APP_SOURCES ${APP_SOURCES} Widgets/CompositedWindow.vala)
 set (APP_SOURCES ${APP_SOURCES} synapse-core/common-actions.vala)
 set (APP_SOURCES ${APP_SOURCES} synapse-core/config-service.vala)
 set (APP_SOURCES ${APP_SOURCES} synapse-core/data-sink.vala)
@@ -108,9 +108,8 @@ vala_precompile(VALA_C launchy
 PACKAGES
 	${VALA_PACKAGES}
 OPTIONS
-    --vapidir=${CMAKE_SOURCE_DIR}/vapi
+  --vapidir=${CMAKE_SOURCE_DIR}/vapi
 	--thread
-	--target-glib=2.38
 	${COMPILE_OPTIONS}
 )
 

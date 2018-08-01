@@ -20,6 +20,12 @@ using Gtk;
 
 namespace Launcher {
 
+    [DBus (name = "org.pantheon.gala")]
+    public interface IGala : Object {
+        public abstract void disable_blur_behind (uint32 xid) throws Error;
+        public abstract void enable_blur_behind (uint32 xid, int x, int y, int width, int height, uint8 opacity) throws Error;
+    }
+
     public enum Modality {
         NORMAL_VIEW = 0,
         CATEGORY_VIEW = 1,
@@ -54,23 +60,17 @@ namespace Launcher {
             this.margin_start = 10;
             this.margin_end = 10;
 
-            /*view_all = new Gtk.ToggleButton();
-            var image = new Gtk.Image.from_icon_name ("view-grid-symbolic", Gtk.IconSize.MENU);
-            image.tooltip_text = _("View as Grid");
-            view_all.add(image);
-            this.pack_start(view_all,false,false,0);*/
-
             view_cats = new Gtk.ToggleButton();
 
             var image = new Gtk.Image.from_icon_name ("view-list-compact-symbolic", Gtk.IconSize.MENU);
-            image.tooltip_text = _("View by Category");
+            image.tooltip_text = _("Category View");
 
             view_cats.add(image);
             this.pack_start (view_cats,false,false,0);
 
             view_stared = new Gtk.ToggleButton();
             var stared_image = new Gtk.Image.from_icon_name ("user-bookmarks-symbolic", Gtk.IconSize.MENU);
-            stared_image.tooltip_text = _("View Stared");
+            stared_image.tooltip_text = _("Starred View");
             view_stared.add(stared_image);
             this.pack_start(view_stared,false,false,0);
 
@@ -126,23 +126,12 @@ namespace Launcher {
     public class LaunchyView : Gtk.Window {
 
         const string LAUNCHY_STYLE_CSS = """
-            .searchbox {
+            searchbox {
                 border-radius: 4px;
             }
-            .window {
-                border-radius: 14px;
-                opacity: 0.5;
-                background-color: #fff;
-            }
-            .color-light {
-                background-color: alpha(#fff, 0.85);
-                    box-shadow:
-                        inset 0 -1px 1px alpha(#fff, 0.2),
-                        0 1px 3px alpha(#000, 0.24),
-                        0 1px 1px alpha(#000, 0.12);
-                margin-bottom: 4px;
-                opacity: 0.5;
-                border-radius: 14px;
+            window {
+                border-radius: 8px;
+                background-color: %s;
             }
         """;
 
@@ -226,13 +215,14 @@ namespace Launcher {
                 Launchy.settings.columns = Launchy.settings.columns_int;
             }
 
-            provider = new Gtk.CssProvider ();
-            try {
-                provider.load_from_data (LAUNCHY_STYLE_CSS, LAUNCHY_STYLE_CSS.length);
-                Gtk.StyleContext.add_provider_for_screen (Gdk.Screen.get_default (), provider, Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION);
-            } catch (Error e) {
-                critical (e.message);
-            }
+            //var xwin = (Gdk.X11.Window)get_window ();
+            //uint32 id = (uint32)xwin.get_xid ();
+
+            /*IGala? gala = Bus.get_proxy_sync (BusType.SESSION, "org.pantheon.gala", "/org/pantheon/gala");
+            Idle.add (() => {
+                gala.enable_blur_behind (0x3600007, 0, 0, 0, 0, 255);
+                return false;
+            });*/
 
             weak Gtk.IconTheme default_theme = Gtk.IconTheme.get_default ();
 			      default_theme.add_resource_path ("/org/enso/launchy/icons");
@@ -246,11 +236,8 @@ namespace Launcher {
             this.set_type_hint (Gdk.WindowTypeHint.MENU);
             this.focus_on_map = true;
             this.decorated = false;
-            this.avoid_show = false;
-            //this.window_position = Gtk.WindowPosition.MOUSE;
-
-            //get_style_context ().add_class (Gtk.STYLE_CLASS_MENUBAR);
-            //get_style_context ().add_class ("window");
+            this.set_visual (Gdk.Screen.get_default ().get_rgba_visual ());
+            //this.avoid_show = false;
 
             // Have the window in the right place
             read_settings (true);
@@ -308,16 +295,21 @@ namespace Launcher {
                 Launchy.settings.rows = default_rows;
         }
 
+        private void set_background () {
+            Gtk.StyleContext.remove_provider_for_screen (Gdk.Screen.get_default (), provider);
+            string str = "rgba (243, 244, 245, 255)";
+            //rgb(243, 244, 245)
+
+            provider = new Gtk.CssProvider ();
+            provider.load_from_data (LAUNCHY_STYLE_CSS.printf (str));
+
+            Gtk.StyleContext.add_provider_for_screen (Gdk.Screen.get_default (), provider, 600);
+        }
+
         private void setup_ui () {
             debug ("In setup_ui ()");
 
-            /*var provider = new Gtk.CssProvider ();
-            try {
-                provider.load_from_data (LAUNCHY_STYLE_CSS, LAUNCHY_STYLE_CSS.length);
-                Gtk.StyleContext.add_provider_for_screen (Gdk.Screen.get_default (), provider, Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION);
-            } catch (Error e) {
-                critical (e.message);
-            }*/
+            set_background();
 
             // Create the base container
             container = new Gtk.Grid ();
@@ -406,13 +398,13 @@ namespace Launcher {
             container.attach (stack, 0, 1, 1, 1);
             container.attach (bottom, 0, 2, 1, 1);
 
-            fcontainer = new Gtk.Frame(null);
-            fcontainer.add (container);
+            //fcontainer = new Gtk.Frame("null");
+            //fcontainer.get_style_context ().add_class ("frame");
+            //fcontainer.add (container);
 
             event_box = new Gtk.EventBox ();
             //event_box.get_style_context ().add_class ("color-light");
-            event_box.add (fcontainer);
-
+            event_box.add (container);
 
             add (event_box);
 
@@ -428,8 +420,9 @@ namespace Launcher {
         public void grab_device () {
             var display = Gdk.Display.get_default ();
             var pointer = display.get_device_manager ().get_client_pointer ();
-            var keyboard = pointer.associated_device;
             var keyboard_status = Gdk.GrabStatus.SUCCESS;
+            var keyboard = pointer.associated_device;
+
 
             if (keyboard != null && keyboard.input_source == Gdk.InputSource.KEYBOARD) {
                 keyboard_status = keyboard.grab (get_window (), Gdk.GrabOwnership.NONE, true,
@@ -616,7 +609,6 @@ namespace Launcher {
             if (position.n_children () == 2) {
                 new_x = (int32) position.get_child_value (0);
                 new_y = (int32) position.get_child_value (1) + workspace_area.height - this.get_window().get_height();
-                warning("x:" + new_x.to_string() + "y:" + new_y.to_string());
             }
 
             if (Launchy.settings.show_at_top) {
@@ -963,11 +955,11 @@ namespace Launcher {
 
             reposition ();
             show_all ();
-            this.event_box.show_all();
+            //this.event_box.show_all();
             //this.container.show_all();
-            present ();
+            //present ();
 
-            set_focus (null);
+            //set_focus (null);
             search_entry.grab_focus ();
             //This is needed in order to not animate if the previous view was the search view.
             view_selector_revealer.transition_type = Gtk.RevealerTransitionType.NONE;
