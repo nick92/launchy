@@ -127,11 +127,17 @@ namespace Launcher {
 
         const string LAUNCHY_STYLE_CSS = """
             searchbox {
-                border-radius: 4px;
+                border-radius: 2px;
             }
             window {
-                border-radius: 8px;
+                border-radius: 2px;
                 background-color: %s;
+                box-shadow:
+                  inset 0 0 0 1px alpha (shade (#000, 1.7), 0.05),
+                  inset 0 1px 0 0 alpha (shade (#fff, 1.7), 0.45),
+                  inset 0 -1px 0 0 alpha (shade (#000, 1.7), 0.15),
+                  0 3px 2px -1px alpha (shade (#000, 0.5), 0.2),
+                  0 3px 5px alpha (shade (#000, 0.5), 0.15);
             }
         """;
 
@@ -236,7 +242,7 @@ namespace Launcher {
             this.set_type_hint (Gdk.WindowTypeHint.MENU);
             this.focus_on_map = true;
             this.decorated = false;
-            this.set_visual (Gdk.Screen.get_default ().get_rgba_visual ());
+            //this.set_visual (Gdk.Screen.get_default ().get_rgba_visual ());
             //this.avoid_show = false;
 
             // Have the window in the right place
@@ -297,7 +303,7 @@ namespace Launcher {
 
         private void set_background () {
             Gtk.StyleContext.remove_provider_for_screen (Gdk.Screen.get_default (), provider);
-            string str = "rgba (243, 244, 245, 255)";
+            string str = "rgba (243, 244, 245, 200)";
             //rgb(243, 244, 245)
 
             provider = new Gtk.CssProvider ();
