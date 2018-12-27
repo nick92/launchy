@@ -175,13 +175,10 @@ namespace Launcher.Widgets {
                         label = _("Actions");
                         break;
                     case Synapse.MatchType.SEARCH:
-                        label = _("Search");
+                        label = _("Search the Internet");
                         break;
                     case Synapse.MatchType.CONTACT:
-                        label = _("Contacts");
-                        break;
-                    case Synapse.MatchType.INTERNET:
-                        label = _("Search the Internet");
+                        label = _("Contact");
                         break;
                     case 10:
                         label = _("Application Actions");
@@ -206,7 +203,7 @@ namespace Launcher.Widgets {
                         n_results++;
                         continue;
                     }
-                    else if (match.match_type == Synapse.MatchType.INTERNET) {
+                    else if (match.match_type == Synapse.MatchType.CONTACT) {
 						show_search (new Backend.App.from_synapse_match (match), search_term);
 						n_results++;
                         continue;

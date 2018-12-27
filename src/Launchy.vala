@@ -106,9 +106,9 @@ public class Launcher.Launchy : Gtk.Application {
 
     public static int main (string[] args) {
         Gtk.init (ref args);
-        Intl.bindtextdomain(Constants.GETTEXT_PACKAGE, GLib.Path.build_filename(Constants.DATADIR,"locale"));
+        /* Intl.bindtextdomain(Constants.GETTEXT_PACKAGE, GLib.Path.build_filename(Constants.DATADIR,"locale"));
         Intl.textdomain(Constants.GETTEXT_PACKAGE);
-        Intl.bind_textdomain_codeset(Constants.GETTEXT_PACKAGE, "UTF-8" );
+        Intl.bind_textdomain_codeset(Constants.GETTEXT_PACKAGE, "UTF-8" );*/
 
         if (args.length > 1) {
             var context = new OptionContext ("");

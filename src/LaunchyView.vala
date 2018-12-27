@@ -303,7 +303,7 @@ namespace Launcher {
 
         private void set_background () {
             Gtk.StyleContext.remove_provider_for_screen (Gdk.Screen.get_default (), provider);
-            string str = "rgba (243, 244, 245, 200)";
+            string str = "rgb (243, 244, 245)";
             //rgb(243, 244, 245)
 
             provider = new Gtk.CssProvider ();
@@ -361,13 +361,13 @@ namespace Launcher {
                 top.add (view_selector_revealer);
             }
 
-      			actions_button = new Gtk.ToggleButton ();
-      			actions_button.get_style_context ().add_class (Gtk.STYLE_CLASS_FLAT);
-      			actions_button.image = new Gtk.Image.from_icon_name ("system-shutdown", Gtk.IconSize.LARGE_TOOLBAR);
-      			//power_button.set_size_request (45, 45)
+            actions_button = new Gtk.ToggleButton ();
+            actions_button.get_style_context ().add_class (Gtk.STYLE_CLASS_FLAT);
+            actions_button.image = new Gtk.Image.from_icon_name ("system-shutdown", Gtk.IconSize.LARGE_TOOLBAR);
+            //power_button.set_size_request (45, 45)
             actions_button.tooltip_text = _("Session Actions");
-      			actions_button.halign = Gtk.Align.END;
-      			actions_button.hexpand = true;
+            actions_button.halign = Gtk.Align.END;
+            actions_button.hexpand = true;
 
             top.add (actions_button);
 

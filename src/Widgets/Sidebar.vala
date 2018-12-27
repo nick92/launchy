@@ -24,7 +24,7 @@ public class Launcher.Widgets.Sidebar : Gtk.TreeView {
 
     private Gtk.TreeIter entry_iter;
 
-    private UserView user_view;
+    //private UserView user_view;
 
     public int cat_size {
         get {
