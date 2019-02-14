@@ -20,12 +20,6 @@ using Gtk;
 
 namespace Launcher {
 
-    [DBus (name = "org.pantheon.gala")]
-    public interface IGala : Object {
-        public abstract void disable_blur_behind (uint32 xid) throws Error;
-        public abstract void enable_blur_behind (uint32 xid, int x, int y, int width, int height, uint8 opacity) throws Error;
-    }
-
     public enum Modality {
         NORMAL_VIEW = 0,
         CATEGORY_VIEW = 1,
@@ -130,8 +124,8 @@ namespace Launcher {
                 border-radius: 2px;
             }
             window {
-                border-radius: 2px;
-                background-color: %s;
+                border-radius: 10px;
+                background_color: %s;
                 box-shadow:
                   inset 0 0 0 1px alpha (shade (#000, 1.7), 0.05),
                   inset 0 1px 0 0 alpha (shade (#fff, 1.7), 0.45),
@@ -235,14 +229,14 @@ namespace Launcher {
 
             // Window properties
             this.title = "Launchy";
-            //this.app_paintable = true;
-            this.skip_pager_hint = true;
-            this.skip_taskbar_hint = true;
+            this.app_paintable = true;
+            //this.skip_pager_hint = true;
+            //this.skip_taskbar_hint = true;
             this.set_keep_above (true);
-            this.set_type_hint (Gdk.WindowTypeHint.MENU);
+            //this.set_type_hint (Gdk.WindowTypeHint.MENU);
             this.focus_on_map = true;
             this.decorated = false;
-            //this.set_visual (Gdk.Screen.get_default ().get_rgba_visual ());
+            this.set_visual (Gdk.Screen.get_default ().get_rgba_visual ());
             //this.avoid_show = false;
 
             // Have the window in the right place
@@ -303,11 +297,11 @@ namespace Launcher {
 
         private void set_background () {
             Gtk.StyleContext.remove_provider_for_screen (Gdk.Screen.get_default (), provider);
-            string str = "rgb (243, 244, 245)";
+            string str = "rgb (255, 255, 255)";
             //rgb(243, 244, 245)
 
             provider = new Gtk.CssProvider ();
-            provider.load_from_data (LAUNCHY_STYLE_CSS.printf (str));
+            provider.load_from_data (LAUNCHY_STYLE_CSS.printf(str));
 
             Gtk.StyleContext.add_provider_for_screen (Gdk.Screen.get_default (), provider, 600);
         }
@@ -354,11 +348,12 @@ namespace Launcher {
             search_entry.placeholder_text = _("Search Apps...");
             search_entry.hexpand = true;
             search_entry.margin_start = 6;
+
             search_entry.margin_end = 6;
             search_entry.get_style_context ().add_class ("searchbox");
 
             if (Launchy.settings.show_category_filter) {
-                top.add (view_selector_revealer);
+                //top.add (view_selector_revealer);
             }
 
             actions_button = new Gtk.ToggleButton ();
@@ -369,9 +364,9 @@ namespace Launcher {
             actions_button.halign = Gtk.Align.END;
             actions_button.hexpand = true;
 
-            top.add (actions_button);
+            //top.add (actions_button);
 
-            bottom.add (search_entry);
+            top.add (search_entry);
 
             stack = new Gtk.Stack ();
             stack.transition_type = Gtk.StackTransitionType.SLIDE_LEFT_RIGHT;
@@ -608,8 +603,10 @@ namespace Launcher {
 
             var position = Launchy.settings.get_window_positions ();
 
+            this.set_position(Gtk.WindowPosition.CENTER_ALWAYS);
 
-            int new_x = 0;
+
+            /*int new_x = 0;
             int new_y = 0;
 
             if (position.n_children () == 2) {
@@ -627,7 +624,7 @@ namespace Launcher {
             {
               /*if (Launchy.settings.show_at_top) {
                   new_y = workspace_area.y;
-              } else {*/
+              } else {
                   new_y = workspace_area.y + workspace_area.height - this.get_window().get_height();
               //}
 
@@ -639,7 +636,7 @@ namespace Launcher {
             }
             else {
               this.move (new_x, new_y);
-            }
+            }*/
         }
 
         private void change_view_mode (string key) {
