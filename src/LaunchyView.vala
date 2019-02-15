@@ -22,7 +22,6 @@ namespace Launcher {
 
     public enum Modality {
         NORMAL_VIEW = 0,
-        CATEGORY_VIEW = 1,
         STARED_VIEW = 2,
         SEARCH_VIEW = 3,
         ACTIONS_VIEW
@@ -163,9 +162,9 @@ namespace Launcher {
         // Views
         private Widgets.Grid grid_view;
         private Widgets.SearchView search_view;
-        private Widgets.CategoryView category_view;
+        //private Widgets.CategoryView category_view;
         private Widgets.StaredView stared_view;
-        private Widgets.ActionsView actions_view;
+        //private Widgets.ActionsView actions_view;
 
         public Gtk.Grid top;
         public Gtk.Grid bottom;
@@ -408,9 +407,9 @@ namespace Launcher {
 
             add (event_box);
 
-            if (Launchy.settings.use_category)
-                set_modality (Modality.CATEGORY_VIEW);
-            else
+            //if (Launchy.settings.use_category)
+              //  set_modality (Modality.CATEGORY_VIEW);
+            //else
                 set_modality (Modality.NORMAL_VIEW);
 
             debug ("Ui setup completed");
@@ -573,7 +572,7 @@ namespace Launcher {
                 saved_apps = app_system.get_saved_apps ();
 
                 populate_grid_view ();
-                category_view.setup_sidebar ();
+                //category_view.setup_sidebar ();
             });
 
             // position on the right monitor when settings changed
@@ -765,18 +764,18 @@ namespace Launcher {
                             grid_view.go_to_last ();
                         else
                             grid_view.go_to_number (page);
-                    } else if (modality == Modality.CATEGORY_VIEW) {
+                    /*} else if (modality == Modality.CATEGORY_VIEW) {
                         if (page < 0 || page == 9)
                             category_view.app_view.go_to_last ();
                         else
                             category_view.app_view.go_to_number (page);
-                    } else {
+                    */} else {
                         return false;
                     }
                     search_entry.grab_focus ();
                     break;
 
-                case "Tab":
+                /*case "Tab":
                     if (modality == Modality.NORMAL_VIEW) {
                         view_selector.selected = 1;
                         var new_focus = category_view.app_view.get_child_at (category_column_focus, category_row_focus);
@@ -788,11 +787,11 @@ namespace Launcher {
                         if (new_focus != null)
                             new_focus.grab_focus ();
                     }
-                    break;
+                    break;*/
 
                 case "Left":
-                    if (modality != Modality.NORMAL_VIEW && modality != Modality.CATEGORY_VIEW)
-                        return false;
+                    //if (modality != Modality.NORMAL_VIEW && modality != Modality.CATEGORY_VIEW)
+                      //  return false;
 
                     if (get_style_context ().direction == Gtk.TextDirection.LTR) {
                         move_left (event);
@@ -802,8 +801,8 @@ namespace Launcher {
 
                     break;
                 case "Right":
-                    if (modality != Modality.NORMAL_VIEW && modality != Modality.CATEGORY_VIEW)
-                        return false;
+                   // if (modality != Modality.NORMAL_VIEW && modality != Modality.CATEGORY_VIEW)
+                     //   return false;
 
                     if (get_style_context ().direction == Gtk.TextDirection.LTR) {
                         move_right (event);
@@ -815,7 +814,7 @@ namespace Launcher {
                 case "Up":
                     if (modality == Modality.NORMAL_VIEW) {
                             normal_move_focus (0, -1);
-                    } else if (modality == Modality.CATEGORY_VIEW) {
+                    /*} else if (modality == Modality.CATEGORY_VIEW) {
                         if (event.state == Gdk.ModifierType.SHIFT_MASK) { // Shift + Up
                             if (category_view.category_switcher.selected != 0) {
                                 category_view.category_switcher.selected--;
@@ -825,7 +824,7 @@ namespace Launcher {
                             category_view.category_switcher.selected--;
                         } else {
                           category_move_focus (0, -1);
-                        }
+                        }*/
                     } else if (modality == Modality.SEARCH_VIEW) {
                         search_view.up ();
                     }
@@ -834,15 +833,15 @@ namespace Launcher {
                 case "Down":
                     if (modality == Modality.NORMAL_VIEW) {
                             normal_move_focus (0, +1);
-                    } else if (modality == Modality.CATEGORY_VIEW) {
+                    /*} else if (modality == Modality.CATEGORY_VIEW) {
                         if (event.state == Gdk.ModifierType.SHIFT_MASK) { // Shift + Down
-                            category_view.category_switcher.selected++;
+                           // category_view.category_switcher.selected++;
                             top_left_focus ();
                         } else if (search_entry.has_focus) {
-                            category_view.category_switcher.selected++;
+                            //category_view.category_switcher.selected++;
                         } else { // the user has already selected an AppEntry
                             category_move_focus (0, +1);
-                        }
+                        }*/
                     } else if (modality == Modality.SEARCH_VIEW) {
                         search_view.down ();
                     }
@@ -851,19 +850,19 @@ namespace Launcher {
                 case "Page_Up":
                     if (modality == Modality.NORMAL_VIEW) {
                         grid_view.go_to_previous ();
-                    } else if (modality == Modality.CATEGORY_VIEW) {
+                    /*} else if (modality == Modality.CATEGORY_VIEW) {
                         category_view.category_switcher.selected--;
-                        top_left_focus ();
+                        top_left_focus ();*/
                     }
                     break;
 
                 case "Page_Down":
                     if (modality == Modality.NORMAL_VIEW) {
                         grid_view.go_to_next ();
-                    } else if (modality == Modality.CATEGORY_VIEW) {
+                    } /*else if (modality == Modality.CATEGORY_VIEW) {
                         category_view.category_switcher.selected++;
                         top_left_focus ();
-                    }
+                    }*/
                     break;
 
                 case "BackSpace":
@@ -885,10 +884,10 @@ namespace Launcher {
 
                     if (modality == Modality.NORMAL_VIEW) {
                         grid_view.go_to_number (1);
-                    } else if (modality == Modality.CATEGORY_VIEW) {
+                    } /*else if (modality == Modality.CATEGORY_VIEW) {
                         category_view.category_switcher.selected = 0;
                         top_left_focus ();
-                    }
+                    }*/
                     break;
 
                 case "End":
@@ -898,10 +897,10 @@ namespace Launcher {
 
                     if (modality == Modality.NORMAL_VIEW) {
                         grid_view.go_to_last ();
-                    } else if (modality == Modality.CATEGORY_VIEW) {
+                    } /*else if (modality == Modality.CATEGORY_VIEW) {
                         category_view.category_switcher.selected = category_view.category_switcher.cat_size - 1;
                         top_left_focus ();
-                    }
+                    }*/
                     break;
 
                 case "v":
@@ -931,15 +930,15 @@ namespace Launcher {
                 case "GDK_SCROLL_LEFT":
                     if (modality == Modality.NORMAL_VIEW)
                         grid_view.go_to_previous ();
-                    else if (modality == Modality.CATEGORY_VIEW)
-                        category_view.app_view.go_to_previous ();
+                    //else if (modality == Modality.CATEGORY_VIEW)
+                        //category_view.app_view.go_to_previous ();
                     break;
                 case "GDK_SCROLL_DOWN":
                 case "GDK_SCROLL_RIGHT":
                     if (modality == Modality.NORMAL_VIEW)
                         grid_view.go_to_next ();
-                    else if (modality == Modality.CATEGORY_VIEW)
-                        category_view.app_view.go_to_next ();
+                   // else if (modality == Modality.CATEGORY_VIEW)
+                       // category_view.app_view.go_to_next ();
                     break;
 
             }
@@ -984,12 +983,12 @@ namespace Launcher {
                 } else {
                     normal_move_focus (-1, 0);
                 }
-            } else if (modality == Modality.CATEGORY_VIEW) {
+            /*} else if (modality == Modality.CATEGORY_VIEW) {
                 if (event.state == Gdk.ModifierType.SHIFT_MASK) // Shift + Left
                     category_view.app_view.go_to_previous ();
                 else if (!search_entry.has_focus) {//the user has already selected an AppEntry
                     category_move_focus (-1, 0);
-                }
+                }*/
             } else if (modality == Modality.STARED_VIEW) {
                 if (event.state == Gdk.ModifierType.SHIFT_MASK) {// Shift + Left
                     stared_view.go_to_previous ();
@@ -1008,13 +1007,13 @@ namespace Launcher {
                     grid_view.go_to_next ();
                 else
                     normal_move_focus (+1, 0);
-            } else if (modality == Modality.CATEGORY_VIEW) {
-                if (event.state == Gdk.ModifierType.SHIFT_MASK) // Shift + Right
+            /*} else if (modality == Modality.CATEGORY_VIEW) {
+                /*if (event.state == Gdk.ModifierType.SHIFT_MASK) // Shift + Right
                     category_view.app_view.go_to_next ();
                 else if (search_entry.has_focus) // there's no AppEntry selected, the user is switching category
                     top_left_focus ();
                 else //the user has already selected an AppEntry
-                    category_move_focus (+1, 0);
+                    category_move_focus (+1, 0);*/
             } else if (modality == Modality.STARED_VIEW) {
                 if (event.state == Gdk.ModifierType.SHIFT_MASK) {// Shift + Left
                     stared_view.go_to_next ();
@@ -1038,7 +1037,7 @@ namespace Launcher {
                     search_entry.grab_focus ();
                     break;
 
-                case Modality.CATEGORY_VIEW:
+                /*case Modality.CATEGORY_VIEW:
 
                     if (!Launchy.settings.use_category)
                         Launchy.settings.use_category = true;
@@ -1046,7 +1045,7 @@ namespace Launcher {
                     stack.set_visible_child_name ("category");
                     actions_button.set_active(false);
                     search_entry.grab_focus ();
-                    break;
+                    break;*/
 
                 case Modality.SEARCH_VIEW:
                     view_selector_revealer.set_reveal_child (false);
@@ -1155,8 +1154,8 @@ namespace Launcher {
                 populate_stared_view ();
                 //height_request = calculate_grid_height () + Pixels.BOTTOM_SPACE;
 
-                category_view.app_view.resize (default_rows, default_columns);
-                category_view.show_filtered_apps (category_view.category_ids.get (category_view.category_switcher.selected));
+                //category_view.app_view.resize (default_rows, default_columns);
+                //category_view.show_filtered_apps (category_view.category_ids.get (category_view.category_switcher.selected));
             }
         }
 
@@ -1185,7 +1184,7 @@ namespace Launcher {
                 else if (delta_column < 0 && (column_focus + 1) % grid_view.get_page_columns () == 0) //check if we need to change page
                     grid_view.go_to_previous ();
 
-                new_focus.grab_focus ();
+                //new_focus.grab_focus ();
             } else { // we move to the first app in the top left corner of the current page
                 column_focus = (grid_view.get_current_page ()-1) * grid_view.get_page_columns ();
                 if (column_focus >= 0)
@@ -1195,7 +1194,7 @@ namespace Launcher {
         }
 
         private void category_move_focus (int delta_column, int delta_row) {
-            var new_focus = category_view.app_view.get_child_at (category_column_focus + delta_column, category_row_focus + delta_row);
+            /*var new_focus = category_view.app_view.get_child_at (category_column_focus + delta_column, category_row_focus + delta_row);
             if (new_focus == null) {
                 if (delta_row < 0 && category_view.category_switcher.selected != 0) {
                     category_view.category_switcher.selected--;
@@ -1229,16 +1228,16 @@ namespace Launcher {
                 category_view.app_view.go_to_previous ();
             }
 
-            new_focus.grab_focus ();
+            new_focus.grab_focus ();*/
         }
 
         // this method moves focus to the first AppEntry in the top left corner of the current page. Works in CategoryView only
         private void top_left_focus () {
-            // this is the first column of the current page
+            /*this is the first column of the current page
             int first_column = (grid_view.get_current_page ()-1) * category_view.app_view.get_page_columns ();
             category_view.app_view.get_child_at (first_column, 0).grab_focus ();
             category_column_focus = first_column;
-            category_row_focus = 1;
+            category_row_focus = 1;*/
         }
 
         public void reset_category_focus () {
