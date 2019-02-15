@@ -9,7 +9,7 @@ sources = [
     'Backend/AppSystem.vala',
     'Backend/DBusService.vala',
     'Backend/Plank.vala',
-    'Backend/RelevancyService.vala',
+    #'Backend/RelevancyService.vala',
     'Backend/SynapseSearch.vala',
 
     'Widgets/AppEntry.vala',
@@ -22,7 +22,7 @@ sources = [
     #'Widgets/CompositedWindow.vala',
     #'Widgets/PageChecker.vala',
     'Widgets/StaredView.vala',
-    'Widgets/ActionsView.vala',
+    #'Widgets/ActionsView.vala',
     asresources
 ]
 

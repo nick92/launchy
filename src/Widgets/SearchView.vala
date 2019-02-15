@@ -90,6 +90,7 @@ namespace Launcher.Widgets {
 
             main_box = new Gtk.Box (Gtk.Orientation.VERTICAL, 0);
             main_box.margin_start = 12;
+            main_box.margin_end = 12;
 
             context_box = new Gtk.Box (Gtk.Orientation.VERTICAL, 0);
             context_fixed = new Gtk.Fixed ();
@@ -119,7 +120,7 @@ namespace Launcher.Widgets {
 
             foreach (var match in matches) {
                 Gee.LinkedList<Synapse.Match> list = null;
-                
+
                 //warning(search_term +"::"+match.match_type.to_string());
 
                 // we're cheating here to give remote results a separate category. We assign 8 as
@@ -207,7 +208,7 @@ namespace Launcher.Widgets {
 						show_search (new Backend.App.from_synapse_match (match), search_term);
 						n_results++;
                         continue;
-					}                    
+					}
                     // expand the actions we get for UNKNOWN
                     else if (match.match_type == Synapse.MatchType.UNKNOWN) {
                         var actions = Backend.SynapseSearch.find_actions_for_match (match);
@@ -241,7 +242,7 @@ namespace Launcher.Widgets {
             items[app] = search_item;
 
         }
-        
+
         private void show_search (Backend.App app, string search_term) {
             var search_item = new SearchItem (app, "", true, search_term);
             app.start_search.connect ((search, target) => start_search (search, target));
