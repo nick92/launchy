@@ -68,6 +68,7 @@ public class Launcher.Widgets.AppEntry : Gtk.Button {
         icon = app.icon;
 
         get_style_context ().add_class (Gtk.STYLE_CLASS_FLAT);
+        get_style_context ().add_class("app_button");
 
         if (Launchy.settings.font_size <= 0.001) {
             app_label = new Gtk.Label (app_name);
@@ -85,6 +86,7 @@ public class Launcher.Widgets.AppEntry : Gtk.Button {
         app_label.set_single_line_mode (false);
         app_label.wrap_mode = Pango.WrapMode.WORD_CHAR;
         app_label.set_ellipsize (Pango.EllipsizeMode.END);
+        //app_label.get_style_context ().add_class("app_label");
 
         image = new Gtk.Image.from_pixbuf (icon);
         image.icon_size = icon_size;

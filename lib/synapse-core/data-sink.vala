@@ -317,7 +317,7 @@ namespace Synapse {
 
         public unowned Object? get_plugin (string name) {
             unowned Object? result = null;
-
+            
             foreach (var plugin in item_plugins) {
                 if (plugin.get_type ().name () == name) {
                     result = plugin;

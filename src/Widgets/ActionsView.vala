@@ -81,7 +81,9 @@ namespace Launcher.Widgets {
 			actions.append("hibernate");
 			actions.append("logout");
 			
-			Gee.List<Synapse.Match> matches;
+            Gee.List<Synapse.Match> matches;
+
+            synapse.get_system_actions();
 						
 			foreach(string action in actions){
 				matches = yield synapse.search_actions (action);

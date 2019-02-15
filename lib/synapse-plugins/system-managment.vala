@@ -84,7 +84,7 @@ namespace Synapse {
 
         public void deactivate () { }
 
-        private abstract class SystemAction : Object, Match {
+        public abstract class SystemAction : Object, Match {
             // for Match interface
             public string title { get; construct set; }
             public string description { get; set; default = ""; }
@@ -429,6 +429,10 @@ namespace Synapse {
         }
 
         private Gee.List<SystemAction> actions;
+
+        public Gee.List<SystemAction> get_actions () {
+            return actions;
+        }
 
         construct {
             actions = new Gee.LinkedList<SystemAction> ();

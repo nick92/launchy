@@ -48,13 +48,13 @@ namespace Synapse {
                 search_term = search;
 
                 string _title = search_term;
-                string _icon_name = "firefox";
+                string _icon_name = "applications-internet";
 
                 this.title = _title;
                 this.icon_name = _icon_name;
                 this.description = _("Search for: " + search);
                 this.has_thumbnail = true;
-                this.match_type = MatchType.CONTACT;
+                this.match_type = MatchType.SEARCH;
             }
 
             public void execute (Match? match) {

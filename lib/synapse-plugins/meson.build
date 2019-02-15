@@ -5,7 +5,7 @@ synapse_plugins_sources = [
     'system-managment.vala',
     'link-plugin.vala',
     'web-search.vala'
-    ]
+]
 
 synapse_plugins_deps = [
     glib_dep,

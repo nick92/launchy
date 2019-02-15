@@ -19,6 +19,7 @@ sources = [
     'Widgets/SearchItem.vala',
     'Widgets/Sidebar.vala',
     'Widgets/CategoryView.vala',
+    #'Widgets/CompositedWindow.vala',
     #'Widgets/PageChecker.vala',
     'Widgets/StaredView.vala',
     'Widgets/ActionsView.vala',

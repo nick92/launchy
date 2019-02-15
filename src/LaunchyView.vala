@@ -120,12 +120,29 @@ namespace Launcher {
     public class LaunchyView : Gtk.Window {
 
         const string LAUNCHY_STYLE_CSS = """
-            searchbox {
-                border-radius: 2px;
+            .app_button {
+                color: #E7E8EB;
+            }
+            .app_button:hover {
+                color: #343844;
+            }
+            .app_button:active {
+                color: #343844;
+            }
+            .container {
+                background-color: rgba(67, 68, 79,0.4);
+                border-radius: 5px;
+            }
+            .searchbox {
+                border-radius: 5px;
+                min-height: 30px;
+                min-width: 30px;
+                background-color: rgba(0,0,0,0.5);
+                color: #E7E8EB;
             }
             window {
                 border-radius: 10px;
-                background_color: %s;
+                background-color: rgba(0,0,0,0.5);
                 box-shadow:
                   inset 0 0 0 1px alpha (shade (#000, 1.7), 0.05),
                   inset 0 1px 0 0 alpha (shade (#fff, 1.7), 0.45),
@@ -215,25 +232,15 @@ namespace Launcher {
                 Launchy.settings.columns = Launchy.settings.columns_int;
             }
 
-            //var xwin = (Gdk.X11.Window)get_window ();
-            //uint32 id = (uint32)xwin.get_xid ();
-
-            /*IGala? gala = Bus.get_proxy_sync (BusType.SESSION, "org.pantheon.gala", "/org/pantheon/gala");
-            Idle.add (() => {
-                gala.enable_blur_behind (0x3600007, 0, 0, 0, 0, 255);
-                return false;
-            });*/
-
             weak Gtk.IconTheme default_theme = Gtk.IconTheme.get_default ();
 			      default_theme.add_resource_path ("/org/enso/launchy/icons");
 
             // Window properties
             this.title = "Launchy";
             this.app_paintable = true;
-            //this.skip_pager_hint = true;
-            //this.skip_taskbar_hint = true;
+			this.resizable = false;
             this.set_keep_above (true);
-            //this.set_type_hint (Gdk.WindowTypeHint.MENU);
+            //this.set_type_hint (Gdk.WindowTypeHint.POPUP_MENU);
             this.focus_on_map = true;
             this.decorated = false;
             this.set_visual (Gdk.Screen.get_default ().get_rgba_visual ());
@@ -297,11 +304,9 @@ namespace Launcher {
 
         private void set_background () {
             Gtk.StyleContext.remove_provider_for_screen (Gdk.Screen.get_default (), provider);
-            string str = "rgb (255, 255, 255)";
-            //rgb(243, 244, 245)
 
             provider = new Gtk.CssProvider ();
-            provider.load_from_data (LAUNCHY_STYLE_CSS.printf(str));
+            provider.load_from_data (LAUNCHY_STYLE_CSS);
 
             Gtk.StyleContext.add_provider_for_screen (Gdk.Screen.get_default (), provider, 600);
         }
@@ -316,7 +321,8 @@ namespace Launcher {
             container.row_spacing = 6;
             container.row_homogeneous = false;
             container.column_homogeneous = false;
-            container.margin_top = 12;
+            //container.margin_top = 12;
+            container.get_style_context ().add_class ("container");
 
             // Add top bar
             top = new Gtk.Grid ();
@@ -345,10 +351,10 @@ namespace Launcher {
                 this.view_selector.selected = 0;
 
             search_entry = new Gtk.SearchEntry ();
-            search_entry.placeholder_text = _("Search Apps...");
+            search_entry.placeholder_text = _("Search Apps ...");
             search_entry.hexpand = true;
+            search_entry.margin_top = 6;
             search_entry.margin_start = 6;
-
             search_entry.margin_end = 6;
             search_entry.get_style_context ().add_class ("searchbox");
 
@@ -375,33 +381,26 @@ namespace Launcher {
             grid_view = new Widgets.Grid (Launchy.settings.rows, Launchy.settings.columns);
 
             // Create the "CATEGORY_VIEW"
-            category_view = new Widgets.CategoryView (this);
+            //category_view = new Widgets.CategoryView (this);
 
-            stared_view = new Widgets.StaredView (Launchy.settings.rows, Launchy.settings.columns);
+            //stared_view = new Widgets.StaredView (Launchy.settings.rows, Launchy.settings.columns);
 
             // Create the "SEARCH_VIEW"
             search_view = new Widgets.SearchView (this);
             //search_view.margin_end = 6;
-            search_view.start_search.connect ((match, target) => {
-                search.begin (search_entry.text, match, target);
-            });
 
             // Create the "SEARCH_VIEW"
-            actions_view = new Widgets.ActionsView (this);
+            //actions_view = new Widgets.ActionsView (this);
 
-            stack.add_named (category_view, "category");
+            //stack.add_named (category_view, "category");
             stack.add_named (grid_view, "normal");
             stack.add_named (search_view, "search");
-            stack.add_named (stared_view, "stared");
-            stack.add_named (actions_view, "actions");
+            //stack.add_named (stared_view, "stared");
+            //stack.add_named (actions_view, "actions");
 
             container.attach (top, 0, 0, 1, 1);
             container.attach (stack, 0, 1, 1, 1);
             container.attach (bottom, 0, 2, 1, 1);
-
-            //fcontainer = new Gtk.Frame("null");
-            //fcontainer.get_style_context ().add_class ("frame");
-            //fcontainer.add (container);
 
             event_box = new Gtk.EventBox ();
             //event_box.get_style_context ().add_class ("color-light");
@@ -508,6 +507,10 @@ namespace Launcher {
                 return false;
             });
 
+            search_view.start_search.connect ((match, target) => {
+                search.begin (search_entry.text, match, target);
+            });
+
             this.hide.connect (() => {
                 this.avoid_show = true;
                 GLib.Timeout.add(300,this.reset_avoid_show);
@@ -598,10 +601,9 @@ namespace Launcher {
 
         public void reposition () {
             debug ("Repositioning");
+            //var workspace_area = this.get_screen().get_monitor_workarea(this.screen.get_primary_monitor());
 
-            var workspace_area = this.get_screen().get_monitor_workarea(this.screen.get_primary_monitor());
-
-            var position = Launchy.settings.get_window_positions ();
+            //var position = Launchy.settings.get_window_positions ();
 
             this.set_position(Gtk.WindowPosition.CENTER_ALWAYS);
 

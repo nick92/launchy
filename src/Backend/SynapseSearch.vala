@@ -23,8 +23,8 @@ namespace Launcher.Backend {
     public class SynapseSearch : Object {
 
         private static Type[] plugins = {
-            //typeof (Synapse.CalculatorPlugin),
-            //typeof (Synapse.CommandPlugin),
+            typeof (Synapse.CalculatorPlugin),
+            typeof (Synapse.CommandPlugin),
             typeof (Synapse.DesktopFilePlugin),
             typeof (Synapse.SystemManagementPlugin),
             typeof (Synapse.WebSearchPlugin),
@@ -36,7 +36,11 @@ namespace Launcher.Backend {
         Cancellable? current_search = null;
 
         public SynapseSearch () {
+            init_sink();
+        }
 
+        private void init_sink () {
+            message("init_sink");
             if (sink == null) {
                 sink = new Synapse.DataSink ();
                 foreach (var plugin in plugins) {
@@ -45,6 +49,25 @@ namespace Launcher.Backend {
 
                 favicon_cache = new Gee.HashMap<string,Gdk.Pixbuf> ();
             }
+        }
+
+        public void get_system_actions () {
+            message("get_system_actions");
+            if (sink == null)
+                init_sink();
+
+            //message(sink.is_plugin_enabled("Synapse.SystemManagementPlugin").to_string());
+
+            var smp = sink.get_plugin("Synapse.SystemManagementPlugin");
+
+            /* Gee.List<Synapse.SystemManagementPlugin.SystemAction> actions = smp.get_actions();
+
+            actions.foreach((action) => {
+                warning(action.title);
+
+                return true;
+            });*/
+
         }
 
         public async Gee.List<Synapse.Match>? search (string text, Synapse.SearchProvider? provider = null) {
