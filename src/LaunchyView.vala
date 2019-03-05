@@ -129,7 +129,7 @@ namespace Launcher {
                 color: #343844;
             }
             .container {
-                background-color: rgba(67, 68, 79,0.4);
+                background-color: rgba(67, 68, 79,0.9);
                 border-radius: 5px;
             }
             .searchbox {
@@ -141,7 +141,7 @@ namespace Launcher {
             }
             window {
                 border-radius: 10px;
-                background-color: rgba(0,0,0,0.5);
+                background-color: rgba(0,0,0,0.4);
                 box-shadow:
                   inset 0 0 0 1px alpha (shade (#000, 1.7), 0.05),
                   inset 0 1px 0 0 alpha (shade (#fff, 1.7), 0.45),
