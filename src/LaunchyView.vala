@@ -118,39 +118,6 @@ namespace Launcher {
 
     public class LaunchyView : Gtk.Window {
 
-        const string LAUNCHY_STYLE_CSS = """
-            .app_button {
-                color: #E7E8EB;
-            }
-            .app_button:hover {
-                color: #343844;
-            }
-            .app_button:active {
-                color: #343844;
-            }
-            .container {
-                background-color: rgba(67, 68, 79,0.9);
-                border-radius: 5px;
-            }
-            .searchbox {
-                border-radius: 5px;
-                min-height: 30px;
-                min-width: 30px;
-                background-color: rgba(0,0,0,0.5);
-                color: #E7E8EB;
-            }
-            window {
-                border-radius: 10px;
-                background-color: rgba(0,0,0,0.4);
-                box-shadow:
-                  inset 0 0 0 1px alpha (shade (#000, 1.7), 0.05),
-                  inset 0 1px 0 0 alpha (shade (#fff, 1.7), 0.45),
-                  inset 0 -1px 0 0 alpha (shade (#000, 1.7), 0.15),
-                  0 3px 2px -1px alpha (shade (#000, 0.5), 0.2),
-                  0 3px 5px alpha (shade (#000, 0.5), 0.15);
-            }
-        """;
-
         public signal void stared_changed();
 
         // Widgets
@@ -216,6 +183,8 @@ namespace Launcher {
 
         public LaunchyView () {
 
+            Object (type: Gtk.WindowType.POPUP);
+
             primary_monitor = screen.get_primary_monitor ();
             Gdk.Rectangle geometry;
             screen.get_monitor_geometry (primary_monitor, out geometry);
@@ -239,6 +208,7 @@ namespace Launcher {
             this.app_paintable = true;
 			this.resizable = false;
             this.set_keep_above (true);
+            //this.type = Gtk.WindowType.POPUP;
             //this.set_type_hint (Gdk.WindowTypeHint.POPUP_MENU);
             this.focus_on_map = true;
             this.decorated = false;
@@ -305,7 +275,7 @@ namespace Launcher {
             Gtk.StyleContext.remove_provider_for_screen (Gdk.Screen.get_default (), provider);
 
             provider = new Gtk.CssProvider ();
-            provider.load_from_data (LAUNCHY_STYLE_CSS);
+            provider.load_from_resource ("/org/enso/launchy/applications-menu.css");
 
             Gtk.StyleContext.add_provider_for_screen (Gdk.Screen.get_default (), provider, 600);
         }
@@ -350,7 +320,7 @@ namespace Launcher {
                 this.view_selector.selected = 0;
 
             search_entry = new Gtk.SearchEntry ();
-            search_entry.placeholder_text = _("Search Apps ...");
+            search_entry.placeholder_text = ("Search Apps ...");
             search_entry.hexpand = true;
             search_entry.margin_top = 6;
             search_entry.margin_start = 6;

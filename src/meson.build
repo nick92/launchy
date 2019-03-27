@@ -50,5 +50,6 @@ executable(
     sources,
     dependencies: dependencies,
     c_args : '-DGMENU_I_KNOW_THIS_IS_UNSTABLE',
+    vala_args:['--target-glib=2.38', '--gresources=' + meson.source_root () + '/data/icons.gresource.xml'],
     install: true
 )
