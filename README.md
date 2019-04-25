@@ -17,6 +17,7 @@
 	libwnck-3-dev
 	libzeitgeist-2.0-dev (optional)
 	pkg-config
+	libgranite-dev
 	valac
 
 ### Build and install 

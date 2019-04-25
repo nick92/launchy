@@ -40,6 +40,7 @@ namespace Launcher.Widgets {
 
             this.action = action;
             get_style_context ().add_class (Gtk.STYLE_CLASS_FLAT);
+            get_style_context ().add_class ("app_button");
 			
             string markup;
             if (action)
