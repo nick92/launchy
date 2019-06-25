@@ -22,6 +22,7 @@ namespace Launcher {
 
     public enum Modality {
         NORMAL_VIEW = 0,
+        CATEGORY_VIEW = 1,
         STARED_VIEW = 2,
         SEARCH_VIEW = 3,
         ACTIONS_VIEW
@@ -41,32 +42,66 @@ namespace Launcher {
             }
         }
 
-        //private Gtk.ToggleButton view_all;
+        private Gtk.ToggleButton view_all;
         private Gtk.ToggleButton view_cats;
         private Gtk.ToggleButton view_stared;
+        private Gtk.ToggleButton view_actions;
 
         public Selector(Gtk.Orientation orientation) {
 
             this._selected = -1;
             this.set_orientation(orientation);
             //this.set_layout(Gtk.ButtonBoxStyle.START);
-            this.margin_start = 10;
-            this.margin_end = 10;
+            //this.margin_start = 10;
+            //this.margin_end = 6;
+
+            var box_buttons = new Gtk.Box (Gtk.Orientation.HORIZONTAL, 0);
+            box_buttons.spacing = 2;
+
+            view_actions = new Gtk.ToggleButton ();
+            view_actions.get_style_context ().add_class (Gtk.STYLE_CLASS_FLAT);
+            view_actions.image = new Gtk.Image.from_icon_name ("system-shutdown", Gtk.IconSize.MENU);
+            //power_button.set_size_request (45, 45)
+            view_actions.tooltip_text = _("Session Actions");
+            //actions_button.halign = Gtk.Align.END;
+            //actions_button.hexpand = true;
+            //this.pack_start (view_actions,false,false,0);
+
+            view_all = new Gtk.ToggleButton();
+            view_all.get_style_context ().add_class (Gtk.STYLE_CLASS_FLAT);
+            var grid_image = new Gtk.Image.from_icon_name ("view-grid-symbolic", Gtk.IconSize.MENU);
+            grid_image.tooltip_text = _("Grid View");
+            view_all.add(grid_image);
+            
 
             view_cats = new Gtk.ToggleButton();
-
-            var image = new Gtk.Image.from_icon_name ("view-list-compact-symbolic", Gtk.IconSize.MENU);
+            view_cats.get_style_context ().add_class (Gtk.STYLE_CLASS_FLAT);
+            var image = new Gtk.Image.from_icon_name ("view-list-symbolic", Gtk.IconSize.MENU);
             image.tooltip_text = _("Category View");
-
             view_cats.add(image);
-            this.pack_start (view_cats,false,false,0);
 
             view_stared = new Gtk.ToggleButton();
+            view_stared.get_style_context ().add_class (Gtk.STYLE_CLASS_FLAT);
+            //view_stared.set_size_request (1,1);
+
             var stared_image = new Gtk.Image.from_icon_name ("user-bookmarks-symbolic", Gtk.IconSize.MENU);
             stared_image.tooltip_text = _("Starred View");
             view_stared.add(stared_image);
-            this.pack_start(view_stared,false,false,0);
+            
+            box_buttons.add (view_cats);
+            box_buttons.add (view_all);
+            add (box_buttons);
+            //add (view_all);
+            //add(view_stared);
 
+            view_all.button_release_event.connect( (bt) => {
+                if(view_all.active)
+                    this.set_selector(1);
+                else
+                    this.set_selector(0);
+
+                return true;
+            });
             view_stared.button_release_event.connect( (bt) => {
                 if(view_stared.active)
                     this.set_selector(0);
@@ -94,19 +129,19 @@ namespace Launcher {
                 this._selected = v;
                 switch(v) {
                 case 0:
-                    //this.view_all.set_active(true);
+                    this.view_all.set_active(true);
                     this.view_cats.set_active(false);
-                    this.view_stared.set_active(false);
+                    //this.view_stared.set_active(false);
                     break;
                 case 1:
-                    //this.view_all.set_active(false);
+                    this.view_all.set_active(false);
                     this.view_cats.set_active(true);
-                    this.view_stared.set_active(false);
+                    //this.view_stared.set_active(false);
                     break;
                 case 2:
-                    //this.view_all.set_active(false);
+                    this.view_all.set_active(false);
                     this.view_cats.set_active(false);
-                    this.view_stared.set_active(true);
+                    //this.view_stared.set_active(true);
                     break;
                 }
 
@@ -129,7 +164,7 @@ namespace Launcher {
         // Views
         private Widgets.Grid grid_view;
         private Widgets.SearchView search_view;
-        //private Widgets.CategoryView category_view;
+        private Widgets.CategoryView category_view;
         private Widgets.StaredView stared_view;
         //private Widgets.ActionsView actions_view;
 
@@ -183,7 +218,18 @@ namespace Launcher {
 
         public LaunchyView () {
 
-            Object (type: Gtk.WindowType.POPUP);
+            //Object (type: Gtk.WindowType.POPUP);
+
+            Object (
+                application: application,
+                app_paintable: true,
+                decorated: false,
+                resizable: false,
+                skip_pager_hint: true,
+                skip_taskbar_hint: true,
+                type_hint: Gdk.WindowTypeHint.DOCK,
+                vexpand: false
+            );
 
             primary_monitor = screen.get_primary_monitor ();
             Gdk.Rectangle geometry;
@@ -204,14 +250,6 @@ namespace Launcher {
 			      default_theme.add_resource_path ("/org/enso/launchy/icons");
 
             // Window properties
-            this.title = "Launchy";
-            this.app_paintable = true;
-			this.resizable = false;
-            this.set_keep_above (true);
-            //this.type = Gtk.WindowType.POPUP;
-            //this.set_type_hint (Gdk.WindowTypeHint.POPUP_MENU);
-            this.focus_on_map = true;
-            this.decorated = false;
             this.set_visual (Gdk.Screen.get_default ().get_rgba_visual ());
             //this.avoid_show = false;
 
@@ -308,10 +346,12 @@ namespace Launcher {
             bottom.margin_bottom = 12;
 
             view_selector = new Selector(Gtk.Orientation.HORIZONTAL);
-            view_selector.margin_end = 6;
+            view_selector.margin_top = 6;
+            view_selector.margin_bottom = 6;
             view_selector.margin_start = 6;
+            //view_selector.margin_end = 6;
             view_selector_revealer = new Gtk.Revealer ();
-            view_selector_revealer.transition_type = Gtk.RevealerTransitionType.SLIDE_RIGHT;
+            view_selector_revealer.transition_type = Gtk.RevealerTransitionType.CROSSFADE;
             view_selector_revealer.add (view_selector);
 
             if (Launchy.settings.use_category)
@@ -328,20 +368,12 @@ namespace Launcher {
             search_entry.get_style_context ().add_class ("searchbox");
 
             if (Launchy.settings.show_category_filter) {
-                //top.add (view_selector_revealer);
+                top.add (view_selector_revealer);
             }
 
-            actions_button = new Gtk.ToggleButton ();
-            actions_button.get_style_context ().add_class (Gtk.STYLE_CLASS_FLAT);
-            actions_button.image = new Gtk.Image.from_icon_name ("system-shutdown", Gtk.IconSize.LARGE_TOOLBAR);
-            //power_button.set_size_request (45, 45)
-            actions_button.tooltip_text = _("Session Actions");
-            actions_button.halign = Gtk.Align.END;
-            actions_button.hexpand = true;
+            top.add (search_entry);
 
             //top.add (actions_button);
-
-            top.add (search_entry);
 
             stack = new Gtk.Stack ();
             stack.transition_type = Gtk.StackTransitionType.SLIDE_LEFT_RIGHT;
@@ -350,7 +382,7 @@ namespace Launcher {
             grid_view = new Widgets.Grid (Launchy.settings.rows, Launchy.settings.columns);
 
             // Create the "CATEGORY_VIEW"
-            //category_view = new Widgets.CategoryView (this);
+            category_view = new Widgets.CategoryView (this);
 
             //stared_view = new Widgets.StaredView (Launchy.settings.rows, Launchy.settings.columns);
 
@@ -358,10 +390,10 @@ namespace Launcher {
             search_view = new Widgets.SearchView (this);
             //search_view.margin_end = 6;
 
-            // Create the "SEARCH_VIEW"
+            // Create the "ACTIONS_VIEW"
             //actions_view = new Widgets.ActionsView (this);
 
-            //stack.add_named (category_view, "category");
+            stack.add_named (category_view, "category");
             stack.add_named (grid_view, "normal");
             stack.add_named (search_view, "search");
             //stack.add_named (stared_view, "stared");
@@ -377,9 +409,9 @@ namespace Launcher {
 
             add (event_box);
 
-            //if (Launchy.settings.use_category)
-              //  set_modality (Modality.CATEGORY_VIEW);
-            //else
+            if (Launchy.settings.use_category)
+                set_modality (Modality.CATEGORY_VIEW);
+            else
                 set_modality (Modality.NORMAL_VIEW);
 
             debug ("Ui setup completed");
@@ -542,7 +574,7 @@ namespace Launcher {
                 saved_apps = app_system.get_saved_apps ();
 
                 populate_grid_view ();
-                //category_view.setup_sidebar ();
+                category_view.setup_sidebar ();
             });
 
             // position on the right monitor when settings changed
@@ -734,18 +766,18 @@ namespace Launcher {
                             grid_view.go_to_last ();
                         else
                             grid_view.go_to_number (page);
-                    /*} else if (modality == Modality.CATEGORY_VIEW) {
+                    } else if (modality == Modality.CATEGORY_VIEW) {
                         if (page < 0 || page == 9)
                             category_view.app_view.go_to_last ();
                         else
                             category_view.app_view.go_to_number (page);
-                    */} else {
+                    } else {
                         return false;
                     }
                     search_entry.grab_focus ();
                     break;
 
-                /*case "Tab":
+                case "Tab":
                     if (modality == Modality.NORMAL_VIEW) {
                         view_selector.selected = 1;
                         var new_focus = category_view.app_view.get_child_at (category_column_focus, category_row_focus);
@@ -757,7 +789,7 @@ namespace Launcher {
                         if (new_focus != null)
                             new_focus.grab_focus ();
                     }
-                    break;*/
+                    break;
 
                 case "Left":
                     //if (modality != Modality.NORMAL_VIEW && modality != Modality.CATEGORY_VIEW)
@@ -784,7 +816,7 @@ namespace Launcher {
                 case "Up":
                     if (modality == Modality.NORMAL_VIEW) {
                             normal_move_focus (0, -1);
-                    /*} else if (modality == Modality.CATEGORY_VIEW) {
+                    } else if (modality == Modality.CATEGORY_VIEW) {
                         if (event.state == Gdk.ModifierType.SHIFT_MASK) { // Shift + Up
                             if (category_view.category_switcher.selected != 0) {
                                 category_view.category_switcher.selected--;
@@ -794,7 +826,7 @@ namespace Launcher {
                             category_view.category_switcher.selected--;
                         } else {
                           category_move_focus (0, -1);
-                        }*/
+                        }
                     } else if (modality == Modality.SEARCH_VIEW) {
                         search_view.up ();
                     }
@@ -803,15 +835,15 @@ namespace Launcher {
                 case "Down":
                     if (modality == Modality.NORMAL_VIEW) {
                             normal_move_focus (0, +1);
-                    /*} else if (modality == Modality.CATEGORY_VIEW) {
+                    } else if (modality == Modality.CATEGORY_VIEW) {
                         if (event.state == Gdk.ModifierType.SHIFT_MASK) { // Shift + Down
-                           // category_view.category_switcher.selected++;
+                            category_view.category_switcher.selected++;
                             top_left_focus ();
                         } else if (search_entry.has_focus) {
-                            //category_view.category_switcher.selected++;
+                            category_view.category_switcher.selected++;
                         } else { // the user has already selected an AppEntry
                             category_move_focus (0, +1);
-                        }*/
+                        }
                     } else if (modality == Modality.SEARCH_VIEW) {
                         search_view.down ();
                     }
@@ -829,10 +861,10 @@ namespace Launcher {
                 case "Page_Down":
                     if (modality == Modality.NORMAL_VIEW) {
                         grid_view.go_to_next ();
-                    } /*else if (modality == Modality.CATEGORY_VIEW) {
+                    } else if (modality == Modality.CATEGORY_VIEW) {
                         category_view.category_switcher.selected++;
                         top_left_focus ();
-                    }*/
+                    }
                     break;
 
                 case "BackSpace":
@@ -854,10 +886,10 @@ namespace Launcher {
 
                     if (modality == Modality.NORMAL_VIEW) {
                         grid_view.go_to_number (1);
-                    } /*else if (modality == Modality.CATEGORY_VIEW) {
+                    } else if (modality == Modality.CATEGORY_VIEW) {
                         category_view.category_switcher.selected = 0;
                         top_left_focus ();
-                    }*/
+                    }
                     break;
 
                 case "End":
@@ -867,10 +899,10 @@ namespace Launcher {
 
                     if (modality == Modality.NORMAL_VIEW) {
                         grid_view.go_to_last ();
-                    } /*else if (modality == Modality.CATEGORY_VIEW) {
+                    } else if (modality == Modality.CATEGORY_VIEW) {
                         category_view.category_switcher.selected = category_view.category_switcher.cat_size - 1;
                         top_left_focus ();
-                    }*/
+                    }
                     break;
 
                 case "v":
@@ -900,15 +932,15 @@ namespace Launcher {
                 case "GDK_SCROLL_LEFT":
                     if (modality == Modality.NORMAL_VIEW)
                         grid_view.go_to_previous ();
-                    //else if (modality == Modality.CATEGORY_VIEW)
-                        //category_view.app_view.go_to_previous ();
+                    else if (modality == Modality.CATEGORY_VIEW)
+                        category_view.app_view.go_to_previous ();
                     break;
                 case "GDK_SCROLL_DOWN":
                 case "GDK_SCROLL_RIGHT":
                     if (modality == Modality.NORMAL_VIEW)
                         grid_view.go_to_next ();
-                   // else if (modality == Modality.CATEGORY_VIEW)
-                       // category_view.app_view.go_to_next ();
+                    else if (modality == Modality.CATEGORY_VIEW)
+                        category_view.app_view.go_to_next ();
                     break;
 
             }
@@ -1007,7 +1039,7 @@ namespace Launcher {
                     search_entry.grab_focus ();
                     break;
 
-                /*case Modality.CATEGORY_VIEW:
+                case Modality.CATEGORY_VIEW:
 
                     if (!Launchy.settings.use_category)
                         Launchy.settings.use_category = true;
@@ -1015,7 +1047,7 @@ namespace Launcher {
                     stack.set_visible_child_name ("category");
                     actions_button.set_active(false);
                     search_entry.grab_focus ();
-                    break;*/
+                    break;
 
                 case Modality.SEARCH_VIEW:
                     view_selector_revealer.set_reveal_child (false);
