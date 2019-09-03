@@ -5,7 +5,7 @@
     color: #343844;
 }
 .container {
-    background-color: rgb(246, 248, 250);
+    background-color: rgba(246, 248, 250, 0.95);
     border-radius: 8px;
     margin: 10px;
     box-shadow:
@@ -16,7 +16,7 @@
       0 3px 5px alpha (shade (#000, 0.5), 0.15);
 }
 .searchbox {
-    border-radius: 5px;
+    border-radius: 20px;
     min-height: 30px;
     min-width: 30px;
     margin-top: 5px;
@@ -27,3 +27,7 @@
     background: none;
     border: none;
 }
+
+/* .sidebar {
+    background-color: rgba(246, 248, 250, 0.95);
+} */

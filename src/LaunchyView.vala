@@ -56,7 +56,7 @@ namespace Launcher {
             //this.margin_end = 6;
 
             var box_buttons = new Gtk.Box (Gtk.Orientation.HORIZONTAL, 0);
-            box_buttons.spacing = 2;
+            //box_buttons.spacing = 2;
 
             view_actions = new Gtk.ToggleButton ();
             view_actions.get_style_context ().add_class (Gtk.STYLE_CLASS_FLAT);

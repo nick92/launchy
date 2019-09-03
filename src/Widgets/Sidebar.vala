@@ -63,7 +63,7 @@ public class Launcher.Widgets.Sidebar : Gtk.TreeView {
         set_show_expanders (false);
         //set_level_indentation (8);
 
-        hexpand = false;
+        hexpand = true;
         get_style_context ().add_class ("sidebar");
 
         var cell = new Gtk.CellRendererText ();

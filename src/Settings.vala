@@ -33,8 +33,8 @@ namespace Launcher {
         public bool use_category { get; set; }
         public string screen_resolution { get; set; }
         public string resolution { get; set; }
-        public bool show_at_top {get; set; }
-        public int[] window_position {get; set; }
+        public bool show_at_top { get; set; }
+        public int[] window_position { get; set; }
 
         private GLib.Settings panther_settings;
 
