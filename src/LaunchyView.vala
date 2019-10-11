@@ -310,7 +310,7 @@ namespace Launcher {
         }
 
         private void set_background () {
-            Gtk.StyleContext.remove_provider_for_screen (Gdk.Screen.get_default (), provider);
+            //Gtk.StyleContext.remove_provider_for_screen (Gdk.Screen.get_default (), provider);
 
             provider = new Gtk.CssProvider ();
             provider.load_from_resource ("/org/enso/launchy/applications-menu.css");
