@@ -27,7 +27,7 @@ namespace Launcher.Backend {
             typeof (Synapse.CommandPlugin),
             typeof (Synapse.DesktopFilePlugin),
             typeof (Synapse.SystemManagementPlugin),
-            typeof (Synapse.WebSearchPlugin),
+           // typeof (Synapse.WebSearchPlugin),
         };
 
         private static Synapse.DataSink? sink = null;

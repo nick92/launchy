@@ -31,7 +31,7 @@ public class Launcher.Launchy : Gtk.Application {
     public static bool key_activated = false;
     public bool launched = false;
     public Gtk.ToggleButton app_button;
-    public TestClient client;
+    // public TestClient client;
 
     public static Settings settings { get; private set; default = null; }
     public static Gtk.IconTheme icon_theme { get; set; default = null; }

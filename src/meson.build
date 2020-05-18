@@ -16,6 +16,7 @@ sources = [
     'Widgets/Grid.vala',
     'Widgets/Switcher.vala',
     'Widgets/SearchView.vala',
+    'Widgets/StaredView.vala',
     'Widgets/SearchItem.vala',
     'Widgets/Sidebar.vala',
     'Widgets/CategoryView.vala',
