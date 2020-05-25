@@ -31,7 +31,6 @@ dependencies = [
     gobject_dep,
     gio_dep,
     gio_unix_dep,
-    granite_dep,
     gee_dep,
     gtk_dep,
     json_glib_dep,

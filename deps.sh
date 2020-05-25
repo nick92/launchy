@@ -1,0 +1,1 @@
+sudo apt install libgee-0.8-dev libgnome-menu-3-dev libgtk-3-dev libjson-glib-dev libplank-dev libsoup2.4-dev libunity-dev libwnck-3-dev valac

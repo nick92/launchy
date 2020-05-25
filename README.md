@@ -6,7 +6,6 @@
 
 ### Dependencies 
 
- 	cmake
 	libgee-0.8-dev
 	libgnome-menu-3-dev
  	libgtk-3-dev
@@ -17,16 +16,14 @@
 	libwnck-3-dev
 	libzeitgeist-2.0-dev (optional)
 	pkg-config
-	libgranite-dev
 	valac
 
 ### Build and install 
 
 Just type from a command line:
 
-	mkdir build
+	meson build --prefix=/usr
 	cd build
-	cmake .. -DCMAKE_INSTALL_PREFIX=/usr
-	make
+	ninja
 	sudo make install
 	./src/launchy
