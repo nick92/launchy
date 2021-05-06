@@ -40,7 +40,6 @@ namespace Launcher.Backend {
         }
 
         private void init_sink () {
-            message("init_sink");
             if (sink == null) {
                 sink = new Synapse.DataSink ();
                 foreach (var plugin in plugins) {

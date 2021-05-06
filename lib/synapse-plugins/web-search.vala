@@ -46,19 +46,33 @@ namespace Synapse {
 
             public Result (string search) {
                 search_term = search;
-
-                string _title = search_term;
                 string _icon_name = "applications-internet";
+
+                appinfo = AppInfo.get_default_for_type ("x-scheme-handler/http", false);
+                if (appinfo != null) {
+                    _title = _("Search %s with %s").printf (search_term, "Ecosia");
+                    _icon_name = appinfo.get_icon ().to_string ();
+                }
 
                 this.title = _title;
                 this.icon_name = _icon_name;
-                this.description = _("Search for: " + search);
-                this.has_thumbnail = true;
-                this.match_type = MatchType.SEARCH;
+                this.description = _("Open this query in default browser");
+                this.has_thumbnail = false;
+                this.match_type = MatchType.ACTION;
             }
 
             public void execute (Match? match) {
-                AppInfo.launch_default_for_uri (_("https://www.ecosia.org/search?q="+title), null);
+                if (appinfo == null) {
+                    return;
+                }
+
+                var list = new List<string> ();
+                list.append ("https://www.ecosia.org/search?q="+search_term);
+                try {
+                    appinfo.launch_uris (list, null);
+                } catch (Error e) {
+                    warning ("%s\n", e.message);
+                }
             }        
         }
 
@@ -74,13 +88,15 @@ namespace Synapse {
             register_plugin ();
         }
 
+        public bool handles_query (Query query) {
+            return QueryFlags.TEXT in query.query_type;
+        }
+
         public async ResultSet? search (Query query) throws SearchError {
-			if(query.query_type == QueryFlags.ACTIONS)
-				return null;
-				
-			ResultSet results = new ResultSet ();
-			Result search_result = new Result (query.query_string);
-			results.add (search_result, Match.Score.INCREMENT_MINOR);
+			Result result = new Result (query.query_string);
+            ResultSet results = new ResultSet ();
+            results.add (result, Match.Score.AVERAGE);
+            query.check_cancellable ();
 
 			return results;
         }

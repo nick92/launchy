@@ -1,9 +1,9 @@
 .searchbox {
-    border-radius: 20px;
+    border-radius: 25px;
     min-height: 30px;
     min-width: 30px;
-    margin-top: 5px;
-    margin-bottom: 5px;
+    margin: 5px;
+    padding: 5px;
 }
 
 .view_button {

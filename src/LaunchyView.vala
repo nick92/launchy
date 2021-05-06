@@ -352,7 +352,7 @@ namespace Launcher {
             //view_selector.margin_end = 6;
             view_selector_revealer = new Gtk.Revealer ();
             view_selector_revealer.transition_type = Gtk.RevealerTransitionType.CROSSFADE;
-            view_selector_revealer.add (view_selector);
+            //  view_selector_revealer.add (view_selector);
 
             if (Launchy.settings.use_category)
                 this.view_selector.selected = 1;
@@ -360,7 +360,7 @@ namespace Launcher {
                 this.view_selector.selected = 0;
 
             search_entry = new Gtk.SearchEntry ();
-            search_entry.placeholder_text = ("Search Apps ...");
+            search_entry.placeholder_text = ("Search Apps and Internet...");
             search_entry.hexpand = true;
             search_entry.margin_top = 6;
             search_entry.margin_start = 6;
